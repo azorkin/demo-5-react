@@ -1,0 +1,342 @@
+/* Page: Login */
+.login-body
+
+.login-main
+  min-height: 0
+  padding-top: 0
+  background: none
+  display: flex
+  flex-direction: column
+
+  &__container
+    position: relative
+    padding-left: 18px
+    padding-right: 20px
+    flex-grow: 1
+    +rmin(992)
+      padding-left: 15px
+      padding-right: 15px
+
+
+
+
+/* Login / sign-in page layout */
+.col-content
+  position: relative
+  padding-top: 19px
+  z-index: 1
+  +rmin(992)
+    min-height: 730px
+    padding-top: 90px
+    padding-bottom: 50px
+  +rmin(1200)
+    min-height: 846px
+  +rmin(1200)
+    flex: 0 0 (930/1900*100%)
+    max-width: (930/1900*100%)
+  +rmin(1400)
+    padding-right: 78 / 1900 * 100%
+
+.col-img-login
+  display: none
+  position: absolute
+  right: 0
+  top: 0
+  height: 100%
+  width: 100%
+  background: url("../img/login-bg.png") center bottom no-repeat 
+  background-size: cover
+  +rmin(992)
+    position: static
+    height: auto
+    width: auto
+    display: block
+  +rmin(1200)
+    flex: 0 0 (970/1900*100%)
+    max-width: (970/1900*100%)
+
+  &--mobile-visible
+    display: block
+
+
+
+/* Block: Login Content */
+.login-content
+  display: block
+  width: 100%
+  max-width: 502px // ?
+  margin-left: auto
+  margin-right: auto
+  +rmin(1200)
+    max-width: 502px
+
+  &__heading
+    margin-bottom: 12px
+    font-size: 30px
+    line-height: 1
+    font-weight: 600
+    text-transform: uppercase
+    color: #1a3865
+    +rmin(1200)
+      margin-bottom: 22px
+      font-size: 42px
+
+  &__lead
+    margin-bottom: 20px
+    font-size: 18px
+    line-height: 22px
+    +rmin(992)
+      margin-bottom: 15px
+
+  
+
+  &__nav-tabs
+    width: 100%
+    margin-bottom: 15px
+    padding-right: 0
+    border: 1px solid #7f7f7f
+    border-radius: 2px
+    +rmin(992)
+      margin-bottom: 20px
+
+    .desktop-inline
+      display: none
+      +rmin(992)
+        display: inline
+
+    .nav-item:nth-child(1)
+      .active
+        background-color: #f15a28
+        color: #fff
+    .nav-item:nth-child(2)
+      .active
+        background-color: #1a3865
+        color: #fff
+
+    .nav-link
+      position: relative
+      padding: 17px 10px
+      font-size: 18px
+      line-height: 21px
+      &.active
+        &:after
+          border-bottom-width: 8px
+          bottom: -1px
+
+  &__tab-content
+    padding-top: 10px
+    padding-bottom: 30px
+
+
+/* Login form + layout */
+.login-form
+  width: 100%
+  margin-bottom: 22px
+  +rmin(992)
+    margin-bottom: 0
+
+  &--narrow
+    +rmin(992)
+      margin-left: 50px // reserving space for tooltip
+      max-width: 342px
+
+  &__row
+    margin-left: -10px
+    margin-right: -10px
+
+  &__col
+    width: 100%
+    padding-left: 10px
+    padding-right: 10px
+    +rmin(992)
+      max-width: 50%
+      flex: 0 0 50%
+
+  &__label
+    position: absolute
+    top: 21px
+    right: 10px
+    margin-bottom: 0
+    font-size: 18px
+    line-height: 1
+    transition: all .25s
+    +rmin(992)
+      top: 18px
+
+  &__checkbox-group
+    margin-bottom: 22px
+    +rmin(992)
+      margin-top: -5px
+      margin-bottom: 6px
+
+  .form-group
+    position: relative
+    padding-bottom: 16px
+    margin-bottom: 9px
+    +rmin(992)
+      margin-bottom: 16px
+
+    &--no-padding
+      padding-bottom: 0
+
+    &.homei-checkbox
+      padding-bottom: 14px
+      margin-bottom: 0
+
+      // label.error
+
+  &__footer
+    width: 100%
+    +rmin(992)
+      max-width: 242px
+
+  &__submit
+    display: block
+    width: 100%
+    // height: 55px
+    padding: 10px 15px
+    border-radius: 2px
+    border: 1px solid #1f3961
+    background-color: #0353a4
+    color: rgba(#ffffff, .8)
+    font-size: 24px
+    font-weight: 600
+    line-height: 25px
+    text-align: center
+    text-transform: uppercase
+    transition: all .3s
+    cursor: pointer
+    +rmin(992)
+      padding: 15px
+
+    &[disabled]
+      opacity: .65
+      // background-blend-mode: luminosity
+
+  &__footer-text
+    margin-bottom: 0
+    margin-top: 23px
+    font-size: 18px
+    line-height: 20px
+    text-align: center
+    a
+      color: #0353a4
+      text-decoration: none
+      &:focus,
+      &:hover
+        color: #0353a4
+        text-decoration: underline
+
+  &__text
+    margin-bottom: 14px
+    font-size: 18px
+    line-height: 22px
+    +rmin(992)
+      margin-bottom: 16px
+
+  .form-control
+    height: auto //55px
+    padding: 30px 10px 5px 10px
+    border: 1px solid rgba(140, 140, 140, 0.7)
+    border-radius: 2px
+    background-color: #ffffff
+    font-size: 18px
+    line-height: 20px
+    font-weight: 400
+    +rmin(992)
+      padding: 28px 10px 5px 10px
+    
+    &:focus ~ .login-form__label,
+    &:valid ~ .login-form__label,
+    &.move-top ~ .login-form__label
+      top: 13px
+      font-size: 16px
+      z-index: 0
+
+    &:disabled
+      background-color: #dadada
+      cursor: not-allowed
+
+  &__tooltip-btn
+    position: absolute
+    left: 9px
+    top: 10px
+    width: 34px
+    height: 34px
+    padding: 2px
+    border: 1px solid rgba(3, 83, 164, 0.34)
+    border-radius: 50%
+    background-color: #dceaf8
+    background-image: none
+    font-size: 28px
+    line-height: 28px
+    font-weight: 600
+    color: #0353a4
+    text-align: center
+    vertical-align: middle
+    +text-overflow
+    transition: all .3s
+    +rmin(992)
+      left: auto
+      right: 100%
+      margin-right: 10px
+
+    
+
+
+/* Thank you block */
+.login-thanks
+  max-width: 280px
+  font-size: 18px
+  line-height: 22px
+  +rmin(992)
+    max-width: none
+    font-size: 24px
+    line-height: 30px
+  &__heading
+    margin-bottom: 6px
+    font-size: 30px
+    line-height: 40px
+    font-weight: 600
+    +rmin(992)
+      font-size: 42px
+      line-height: 1
+  &__lead
+    margin-bottom: 17px
+    font-size: 24px
+    line-height: 1
+    +rmin(992)
+      margin-bottom: 10px
+      font-size: 30px
+      line-height: 40px
+  br
+    display: none
+    +rmin(992)
+      display: block
+
+
+
+/* Block: Validation indicator*/
+.validation-indicator
+  margin-bottom: 20px
+  &__label
+    display: block
+    margin-bottom: 5px
+    font-size: 18px
+    font-weight: 400
+    line-height: 1
+  &__list
+    list-style-type: none
+    padding: 0
+    margin: 0 -5px
+    display: flex
+    // flex-wrap: wrap
+    li
+      margin-bottom: 5px
+      padding: 0 5px
+      flex-grow: 1
+
+
+
+/* Page: verify phone number */
+

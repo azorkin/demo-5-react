@@ -1,0 +1,106 @@
+/* BLOCK: SITE FOOTER */
+
+.site-footer
+  background-color: #131d2c
+  color: #aaa
+
+  a
+    color: inherit
+    text-decoration: none
+    &:hover
+      color: inherit
+      text-decoration: underline
+
+  &__container
+    padding-left: 22px
+    padding-right: 22px
+    +rmin(992)
+      padding-left: 15px
+      padding-right: 15px
+
+  &__row
+    justify-content: center
+
+  &__top
+    padding-top: 20px
+    padding-bottom: 14px
+    +rmin(992)
+      padding-top: 58px
+      padding-bottom: 25px
+    &:not(:last-child)
+      border-bottom: 2px solid #393838
+
+  &__col
+    width: 100%
+    flex-basis: 100%
+    padding-left: 15px
+    padding-right: 15px
+    +rmin(992)
+      max-width: 300px
+      flex-basis: 300px
+      flex-shrink: 1
+    &--desktop-only
+      display: none
+      +rmin(992)
+        display: block
+
+  &__bottom
+    padding-top: 13px
+    padding-bottom: 14px
+    +rmin(992)
+      padding-top: 30px
+      padding-bottom: 30px
+    +rmin(1200)
+      min-height: 152px
+
+  &__title
+    margin-bottom: 3px
+    color: rgba(#ff7327, .6)
+    font-size: 20px
+    line-height: 1
+    text-transform: uppercase
+    +rmin(992)
+      margin-bottom: 42px
+      font-size: 25px
+
+  &__list
+    list-style-type: none
+    padding-right: 0
+    margin-bottom: 20px
+
+    li
+      margin-bottom: 0
+      color: inherit
+      font-size: 17px
+      line-height: 1.85
+
+    // a
+      color: inherit
+      text-decoration: none
+      &:hover
+        color: inherit
+        text-decoration: underline
+
+  &__company-info
+    margin-bottom: 0
+    font-size: 17px
+    line-height: 1.85
+    b
+      color: #fff
+      font-weight: 400
+      text-transform: uppercase
+    // a
+      color: inherit
+      text-decoration: none
+      &:hover
+        color: inherit
+        text-decoration: underline
+
+  &__copyright
+    max-width: 1530px
+    margin: 0 auto
+    font-size: 17px
+    line-height: 1.85
+    color: #cdcdcd
+
+
