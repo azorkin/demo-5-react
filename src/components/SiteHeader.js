@@ -1,5 +1,8 @@
 import React from 'react';
 import logo from '../img/logo.png';
+import { homeURL, navMenuData} from '../shared/Data';
+import "./ReadabilityComponent";
+// import ReadabilityComponent from './ReadabilityComponent';
 
 class SiteHeader extends React.Component {
   constructor(props) {
@@ -11,42 +14,19 @@ class SiteHeader extends React.Component {
 
   render() {
 
-    const homeURL = "https://www.home-invest.co.il/";
-
-    const navMenuData = [
-      {
-        title: "בית",
-        link: homeURL
-      }, {
-        title: "אודות",
-        link: homeURL + "%D7%90%D7%95%D7%93%D7%95%D7%AA-1/"
-      }, {
-        title: "איך זה עובד?",
-        link: homeURL + "%D7%A9%D7%90%D7%9C%D7%95%D7%AA-%D7%A0%D7%A4%D7%95%D7%A6%D7%95%D7%AA/"
-      }, {
-        title: "בתקשורת",
-        link: homeURL + "%D7%91%D7%AA%D7%A7%D7%A9%D7%95%D7%A8%D7%AA/"
-      }, {
-        title: "צור קשר",
-        link: homeURL + "%D7%A6%D7%95%D7%A8-%D7%A7%D7%A9%D7%A8/"
-      }, {
-        title: "מדיניות פרטיות",
-        link: homeURL + "%D7%9E%D7%93%D7%99%D7%A0%D7%99%D7%95%D7%AA-%D7%A4%D7%A8%D7%98%D7%99%D7%95%D7%AA/"
-      }
-    ];
-
     const navMenu = navMenuData.map((item, index) => {
+
+      let navItemClass = "nav-item";
+
+      if (index === this.state.activeMenuItem) {
+        navItemClass += " active";
+      };
       
-        if (index === this.state.activeMenuItem) {
-          return (
-            <li className="nav-item active"><a href={item.link} className="nav-link">{item.title}</a></li>
-          )
-        }
-        else {
-          return (
-            <li className="nav-item"><a href={item.link} className="nav-link">{item.title}</a></li>
-          )
-        }
+      return (
+        <li className={navItemClass}>
+          <a href={item.link} className="nav-link">{item.title}</a>
+        </li>
+      )
 
     });
 
