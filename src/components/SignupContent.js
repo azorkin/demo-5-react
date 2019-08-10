@@ -3,6 +3,7 @@ import InvestorSignupForm from './Forms/InvestorSignupForm';
 // import { Switch, Route, Redirect } from 'react-router-dom';
 
 class SignupContent extends React.Component {
+
   render() {
     return (
       <div className="content login-content">

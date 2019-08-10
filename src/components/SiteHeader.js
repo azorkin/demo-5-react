@@ -23,7 +23,7 @@ class SiteHeader extends React.Component {
       };
       
       return (
-        <li className={navItemClass}>
+        <li className={navItemClass} key={index}>
           <a href={item.link} className="nav-link">{item.title}</a>
         </li>
       )

@@ -3,8 +3,6 @@ import {footerColMenu1, footerColMenu2} from '../shared/Data'
 import FooterLinks from "./FooterLinks";
 
 const SiteFooter = () => {
-
-  
   
   return (
     <footer className="site-footer">

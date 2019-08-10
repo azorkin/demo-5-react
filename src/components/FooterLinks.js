@@ -2,9 +2,9 @@ import React from 'react';
 
 const FooterLinks = (props) => {
   
-  const footerLinkItems = props.menu.map((item) => {
+  const footerLinkItems = props.menu.map((item, index) => {
     return (
-      <li>
+      <li key={index}>
         <a href={item.link}>{item.title}</a>
       </li>
     )
