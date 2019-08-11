@@ -3,7 +3,19 @@ import { Button, Label, Row, Col, FormGroup } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Link } from "react-router-dom";
 
-const validEmailRegex = RegExp(/d{2-256}$/i);
+// Validation rules
+const isRequired = (val) => val && val.length;
+
+// Custom error label component
+
+const ErrorLabel = (props) => {
+  console.log(props);
+  return (
+    <label htmlFor={props.forId} className="error">
+      {props.children}
+    </label>
+  )
+}
 
 class InvestorSignupForm extends React.Component {
 
@@ -11,25 +23,36 @@ class InvestorSignupForm extends React.Component {
     super(props);
 
     this.state = {
-      loginMode: "investor",
+      loginMode: this.props.mode,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(val) {
-    console.log(val);
+  handleSubmit(values) {
+    console.log(values);
   }
   
 
   render() {
+    console.log(this.state.loginMode);
     return (
       <LocalForm id="signupForm" className="login-form" onSubmit={this.handleSubmit}>
         <Row className="login-form__row">
           <Col md="6" className="login-form__col">
             <FormGroup>
-              <Control.text id="firstName" model=".firstName" name="firstName" className="form-control placehlder-label" />
+              <Control.text id="firstName" model=".firstName" name="firstName" className="form-control placehlder-label" validators={{isRequired}} />
               <Label htmlFor="firstName" className="login-form__label">*שם פרטי</Label>
+              <Errors 
+                forId="firstName"
+                model=".firstName" 
+                show="touched" 
+                // wrapper={(props) => <ErrorLabel forId="firstName">{props.children}</ErrorLabel>} 
+                wrapper={ErrorLabel} 
+                messages={{
+                  isRequired: "שדה חובה"
+                }}
+              />
             </FormGroup>
           </Col>
           <Col md="6" className="login-form__col">

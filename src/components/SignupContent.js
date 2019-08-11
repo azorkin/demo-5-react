@@ -4,7 +4,16 @@ import InvestorSignupForm from './Forms/InvestorSignupForm';
 
 class SignupContent extends React.Component {
 
+  
+
   render() {
+
+    // setting mode to borrower (default) or investor
+    let signupPath = this.props.location.pathname;
+    let signupMode = "borrower";
+    if (signupPath.indexOf("investor") >= 0) signupMode = "investor"
+
+    console.log(signupPath);
     return (
       <div className="content login-content">
         <h1 className="login-content__heading">הרשמה</h1>
@@ -14,7 +23,7 @@ class SignupContent extends React.Component {
         </ul>
         <div id="myTabContent" className="tab-content login-content__tab-content">
           <div id="tab1" role="tabpanel" aria-labelledby="passLoginTab" className="tab-pane fade show active">
-            <InvestorSignupForm />
+            <InvestorSignupForm mode={signupMode}  />
           </div>
           <div id="tab2" role="tabpanel" aria-labelledby="phoneLoginTab" className="tab-pane fade">
             <form id="verifyLoan" action="/" verify-form="" className="login-form">

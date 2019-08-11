@@ -11,7 +11,7 @@ class SigninMain extends React.Component {
           <div className="row">
             <div className="col-lg-6 col-content">
               <Switch>
-                <Route exact path="/signup" component={SignupContent} />
+                <Route path="/signup" component={SignupContent} />
                 <Route exact path="/password" component={PasswordContent} />
                 {/* <Route exact path="/login" component={LoginContent} />
                 <Route exact path="/verify-phone" component={VerifyPhoneContent} /> */}

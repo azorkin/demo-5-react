@@ -1,8 +1,8 @@
 import React from 'react';
 import logo from '../img/logo.png';
 import { homeURL, navMenuData} from '../shared/Data';
-import "./ReadabilityComponent";
-// import ReadabilityComponent from './ReadabilityComponent';
+// import ReadabilityComponent from "./ReadabilityComponent/ReadabilityComponent";
+import { Link } from 'react-router-dom'
 
 class SiteHeader extends React.Component {
   constructor(props) {
@@ -65,18 +65,18 @@ class SiteHeader extends React.Component {
                   <use xlinkHref="#icon-phone"></use>
                 </svg>
               </a>
-              <button type="button" className="navbar-control navbar-control--borrower">
+              <Link to="/signup" className="navbar-control navbar-control--borrower">
                 <svg width="37" height="37" aria-hidden="true">
                   <use xlinkHref="#icon-user"></use>
                 </svg>
                 <span className="navbar-control__caption">כניסת לווים</span>
-              </button>
-              <button type="button" className="navbar-control navbar-control--investor">
+              </Link>
+              <Link to="/signup" className="navbar-control navbar-control--investor">
                 <svg width="37" height="37" aria-hidden="true">
                   <use xlinkHref="#icon-user"></use>
                 </svg>
                 <span className="navbar-control__caption">כניסת משקיעים</span>
-              </button>
+              </Link>
               <button type="button" aria-label="toggle accessibility" className="navbar-control navbar-control--accessibility">
                 <svg width="24" height="29" aria-hidden="true">
                   <use xlinkHref="#icon-accessibility"></use>
