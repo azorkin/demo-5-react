@@ -65,13 +65,13 @@ class SiteHeader extends React.Component {
                   <use xlinkHref="#icon-phone"></use>
                 </svg>
               </a>
-              <Link to="/signup" className="navbar-control navbar-control--borrower">
+              <Link to="/signup/borrower" className="navbar-control navbar-control--borrower">
                 <svg width="37" height="37" aria-hidden="true">
                   <use xlinkHref="#icon-user"></use>
                 </svg>
                 <span className="navbar-control__caption">כניסת לווים</span>
               </Link>
-              <Link to="/signup" className="navbar-control navbar-control--investor">
+              <Link to="/signup/investor" className="navbar-control navbar-control--investor">
                 <svg width="37" height="37" aria-hidden="true">
                   <use xlinkHref="#icon-user"></use>
                 </svg>

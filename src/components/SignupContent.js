@@ -13,7 +13,7 @@ class SignupContent extends React.Component {
     let signupMode = "borrower";
     if (signupPath.indexOf("investor") >= 0) signupMode = "investor"
 
-    console.log(signupPath);
+    console.log(signupPath, signupMode);
     return (
       <div className="content login-content">
         <h1 className="login-content__heading">הרשמה</h1>
