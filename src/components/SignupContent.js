@@ -1,5 +1,5 @@
 import React from 'react';
-import InvestorSignupForm from './Forms/InvestorSignupForm';
+import InvestorSignupForm from './Forms/InvestorSignupForm2';
 // import { Switch, Route, Redirect } from 'react-router-dom';
 
 class SignupContent extends React.Component {

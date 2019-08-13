@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Label, Row, Col, FormGroup } from 'reactstrap';
-import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Control, LocalForm, Errors, Fieldset } from 'react-redux-form';
 import { Link } from "react-router-dom";
 
 // Validation rules
@@ -41,7 +41,7 @@ class InvestorSignupForm extends React.Component {
 
     console.log("state: ", this.state.loginMode, "props: ", this.props.mode);
     return (
-      <LocalForm id="signupForm" className="login-form" onSubmit={this.handleSubmit}>
+      <LocalForm id="signupForm" className="login-form" onSubmit={this.handleSubmit} noValidate>
         <Row className="login-form__row">
           <Col md="6" className="login-form__col">
             <FormGroup>
@@ -108,24 +108,35 @@ class InvestorSignupForm extends React.Component {
           </Col>
         </Row>
 
-        <div className="login-form__checkbox-group">
+        <Fieldset model=".agree" className="login-form__checkbox-group" validators={{
+          '': {
+            // allChecked: (vals) => {(vals)}
+          }
+        }}>
           <FormGroup className="homei-checkbox">
-            <Control.checkbox id="cb1" name="cb1" className="homei-checkbox__input" model=".cb1" required />
+            <Control.checkbox id="cb1" name="cb1" className="homei-checkbox__input" model=".agree.cb1" required />
             <label htmlFor="cb1" className="homei-checkbox__label">אני מאשר את תנאי הסכם הצטרפות מלווה</label>
           </FormGroup>
           <FormGroup className="homei-checkbox">
-            <Control.checkbox id="cb2" name="cb2" className="homei-checkbox__input" model=".cb2" required />
+            <Control.checkbox id="cb2" name="cb2" className="homei-checkbox__input" model=".agree.cb2" required />
             <label htmlFor="cb2" className="homei-checkbox__label">אני מאשר את תנאי הסכם הלואה במיזם</label>
           </FormGroup>
           <FormGroup className="homei-checkbox">
-            <Control.checkbox id="cb3" name="cb3" className="homei-checkbox__input" model=".cb3" required />
+            <Control.checkbox id="cb3" name="cb3" className="homei-checkbox__input" model=".agree.cb3" required />
             <label htmlFor="cb3" className="homei-checkbox__label">אני מאשר את תנאי השימוש</label>
           </FormGroup>
           <FormGroup className="homei-checkbox">
-            <Control.checkbox id="cb4" name="cb4" className="homei-checkbox__input" model=".cb4" required />
+            <Control.checkbox id="cb4" name="cb4" className="homei-checkbox__input" model=".agree.cb4" required />
             <label htmlFor="cb4" className="homei-checkbox__label">אני מאשר את שטר היתר העסקה</label>
           </FormGroup>
-        </div>
+          <Errors 
+            model=".agree"
+            wrapper={ErrorLabel}
+            messages={{
+              allChecked: 'all 4 need to be checked'
+            }}
+          />
+        </Fieldset>
 
         <div className="login-form__footer">
           <Button type="submit" className="login-form__submit">
