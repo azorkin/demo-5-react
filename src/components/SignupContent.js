@@ -4,8 +4,6 @@ import InvestorSignupForm from './Forms/InvestorSignupForm2';
 
 class SignupContent extends React.Component {
 
-  
-
   render() {
 
     // setting mode to borrower (default) or investor

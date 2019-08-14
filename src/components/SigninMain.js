@@ -1,7 +1,8 @@
 import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import SignupContent from "./SignupContent";
 import PasswordContent from "./PasswordContent";
+import ThanksContent from "./ThanksContent";
 
 class SigninMain extends React.Component {
   render() {
@@ -13,6 +14,7 @@ class SigninMain extends React.Component {
               <Switch>
                 <Route path="/signup" component={SignupContent} />
                 <Route exact path="/password" component={PasswordContent} />
+                <Route exact path="/thanks" component={ThanksContent} />
                 {/* <Route exact path="/login" component={LoginContent} />
                 <Route exact path="/verify-phone" component={VerifyPhoneContent} /> */}
               </Switch>

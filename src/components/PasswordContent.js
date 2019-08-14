@@ -1,7 +1,7 @@
 import React from 'react';
 // import { Switch, Route, Redirect } from 'react-router-dom';
 
-class ThanksContent extends React.Component {
+class PasswordContent extends React.Component {
   render() {
     return (
       <div class="content login-content">
@@ -47,4 +47,4 @@ class ThanksContent extends React.Component {
   }
 };
 
-export default ThanksContent;
+export default PasswordContent;

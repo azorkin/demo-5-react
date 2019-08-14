@@ -1,7 +1,12 @@
 import React from 'react';
 import { Button, Label, Row, Col, FormGroup, Form, Input } from 'reactstrap';
 // import { Control, LocalForm, Errors, Fieldset } from 'react-redux-form';
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+
+// API
+const investorSignupRequestURL = 'https://10.7.7.134/api/Investor/_signup';
+const borrowerSignupRequestURL = 'https://10.7.7.134/api/Borrower/_signup';
+
 
 // Validation rules
 const isRequired = (val) => val && val.length;
@@ -26,7 +31,7 @@ class InvestorSignupForm extends React.Component {
     super(props);
 
     this.state = {
-      loginMode: this.props.mode,
+      loginMode: '',
 
       data: {
         captchaKey: 'dummystring',
@@ -70,13 +75,29 @@ class InvestorSignupForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    console.log("current form data is: " + JSON.stringify(this.state.data));
-    // const data = new FormData(event.target);
+    
+    let data = JSON.stringify(this.state.data);
+    console.log("current form data is: " + data);
+    // console.log(this.props);
+    this.props.history.push('/thanks');
 
-    // fetch('/api/form-submit-url', {
-    //   method: 'POST',
-    //   body: data,
-    // });
+    fetch(investorSignupRequestURL, {
+      method: 'POST',
+      body: data,
+      // mode: 'no-cors',
+      headers: {
+        // 'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => {
+      if (!res.ok) {
+        throw Error(res.statusText);
+      }
+      return res.json()
+    })
+    .then(response => console.log('Success: ', response))
+    .catch(error => console.error('Error: ', error))
   }
 
   handleBlur = (field) => (evt) => {
@@ -84,7 +105,29 @@ class InvestorSignupForm extends React.Component {
       touched: { ...this.state.touched, [field]: true }
     });
   }
+
+  // componentDidUpdate() {
+  //   this.setState({
+  //     loginMode: this.props.mode
+  //   });
+  //   console.log("form mounted with state: " + this.state.loginMode);
+  // }
+
+  componentDidUpdate() {
+    console.log("component updated");
+  }
+
+  componentDidMount() {
+    console.log("component mounted");
+  }
   
+  static getDerivedStateFromProps(props, state) {
+    if (state.loginMode !== props.mode ) {
+      return { loginMode: props.mode }
+    }
+
+    return null
+  }
 
   render() {
 
@@ -139,14 +182,14 @@ class InvestorSignupForm extends React.Component {
             <FormGroup>
               <Input 
                 type="tel" 
-                id="phoneNum" 
-                name="phoneNum" 
+                id="mobilePhone" 
+                name="mobilePhone" 
                 className="form-control placehlder-label" 
-                value={this.state.data.phoneNum}
+                value={this.state.data.mobilePhone}
                 onChange={this.handleInputChange}
                 required 
               />
-              <Label htmlFor="phoneNum" className="login-form__label">*מספר נייד</Label>
+              <Label htmlFor="mobilePhone" className="login-form__label">*מספר נייד</Label>
             </FormGroup>
           </Col>
         </Row>
@@ -216,4 +259,4 @@ class InvestorSignupForm extends React.Component {
   }
 }
 
-export default InvestorSignupForm;
+export default withRouter(InvestorSignupForm);
