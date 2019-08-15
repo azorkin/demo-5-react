@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Label, Row, Col, FormGroup, Form, Input } from 'reactstrap';
+import { Button, Label, Row, Col, FormGroup, Form, Input, UncontrolledTooltip } from 'reactstrap';
 // import { Switch, Route, Redirect } from 'react-router-dom';
 
 // Parsing query string
@@ -23,17 +23,32 @@ class PasswordContent extends React.Component {
 
     this.state = {
       userId: '',
-      code: ''
+      code: '',
+
+      // tooltipOpen: false
     }
+
+    // this.toggleTooltip = this.toggleTooltip.bind(this);
 
   }
 
+  // toggleTooltip() {
+  //   this.setState({
+  //     tooltipOpen: !this.state.tooltipOpen
+  //   })
+  // }
+
   componentDidMount() {
+    console.log("mounted");
     let confirmationParams = getQueryStringParams(this.props.location.search);
     this.setState({
       userId: confirmationParams.userId,
       code: confirmationParams.code
     })
+  }
+
+  componentDidUpdate() {
+    console.log("updated");
   }
 
   render() {
@@ -44,9 +59,19 @@ class PasswordContent extends React.Component {
 
         <Form id="verifyForm" className="login-form login-form--narrow" onSubmit={this.handleSubmit} noValidate>
           <FormGroup>
-            <input id="passVal" type="password" name="passVal" autoComplete="new-password" required className="form-control placehlder-label" />
-            <label htmlFor="passVal" className="login-form__label">*בחירת סיסמה</label>
-            <button type="button" data-toggle="tooltip" data-placement="left" title="הסיסמה צריכה לכלול 8 עד 12 תווים, כולל ספרות ואותיות" className="login-form__tooltip-btn">?</button>
+            <Input 
+              id="passVal" 
+              type="password" 
+              name="passVal" 
+              autoComplete="new-password" 
+              required 
+              className="form-control placehlder-label" 
+            />
+            <Label htmlFor="passVal" className="login-form__label">*בחירת סיסמה</Label>
+            <button id="formTooltipToggle" type="button" className="login-form__tooltip-btn">?</button>
+            <UncontrolledTooltip placement="left" target="formTooltipToggle"  container=".form-group">
+              הסיסמה צריכה לכלול 8 עד 12 תווים, כולל ספרות ואותיות
+            </UncontrolledTooltip>
           </FormGroup>
 
           <div className="validation-indicator">
