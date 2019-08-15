@@ -15,6 +15,7 @@ class SigninMain extends React.Component {
                 <Route path="/signup" component={SignupContent} />
                 <Route exact path="/password" component={PasswordContent} />
                 <Route exact path="/thanks" component={ThanksContent} />
+                <Route path="/email/_confirm" component={PasswordContent} />
                 {/* <Route exact path="/login" component={LoginContent} />
                 <Route exact path="/verify-phone" component={VerifyPhoneContent} /> */}
               </Switch>
