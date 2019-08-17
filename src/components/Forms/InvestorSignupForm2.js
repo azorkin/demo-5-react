@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Label, Row, Col, FormGroup, Form, Input } from 'reactstrap';
+import { Button, ButtonGroup, Label, Row, Col, FormGroup, Form, Input } from 'reactstrap';
 // import { Control, LocalForm, Errors, Fieldset } from 'react-redux-form';
 import { Link, withRouter } from "react-router-dom";
 
@@ -9,13 +9,21 @@ const borrowerSignupRequestURL = 'https://10.7.7.134/api/Borrower/_signup';
 
 
 // Validation rules
-const isRequired = (val) => val && val.length;
+const isRequired = (val) => !!(val && val.length);
+const hasLetterA = (val) => val.indexOf("A") > 0;
 const isValidEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(val);
 const isValidPhone = (val) => /^\+?(972|0)(-)?0?(([23489]{1}\d{7})|[5]{1}\d{8})$/i.test(val);
 
+const validateTextInput = (value, validators) => {
+  let isValid = true;
+  for (let index = 0; index < validators.length; index++) {
+    isValid = isValid && validators[index](value)
+  }
+  return isValid
+}
+
 
 // Custom error label component
-
 const ErrorLabel = (props) => {
   console.log(props);
   return (
@@ -31,7 +39,7 @@ class InvestorSignupForm extends React.Component {
     super(props);
 
     this.state = {
-      loginMode: '',
+      loginMode: this.props.mode || '',
 
       data: {
         captchaKey: 'dummystring',
@@ -54,12 +62,42 @@ class InvestorSignupForm extends React.Component {
         isConfirmLoanAgreementProject: false,
         isConfirmTransactionPermit: false,
         isConfirm4: false
-      }
+      },
+
+      validity: {
+        firstName: true,
+        lastName: true,
+        email: true,
+        mobilePhone: true,
+        isConfirmTermsAccountType: true,
+        isConfirmLoanAgreementProject: true,
+        isConfirmTransactionPermit: true,
+        isConfirm4: true,
+      },
+
+      formIsValid: false
+
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
+    this.handleModeChange = this.handleModeChange.bind(this);
+  }
+
+  setFormValidityState() {
+    for (var status in this.state.validity ) {
+      if (status === false) return false
+    }
+    return true
+  }
+
+  handleModeChange(event) {
+    console.log(event.target.value);
+    this.setState({
+      loginMode: event.target.value
+    });
+    this.props.history.push('/signup/' + event.target.value);
   }
 
   handleInputChange(event) {
@@ -70,7 +108,17 @@ class InvestorSignupForm extends React.Component {
     this.setState({
       // [name]: value
       data: {...this.state.data, [name]: value}
-    })
+    });
+
+    console.log(validateTextInput(value, [isRequired, hasLetterA]));
+
+    this.setState({
+      validity: { ...this.state.validity, [name]: validateTextInput(value, [isRequired, hasLetterA])}
+    });
+
+    this.setState({formIsValid: this.setFormValidityState()});
+
+    console.log("form is valid?" + this.state.formIsValid);
   }
 
   handleSubmit(event) {
@@ -86,7 +134,7 @@ class InvestorSignupForm extends React.Component {
       body: data,
       // mode: 'no-cors',
       headers: {
-        // 'Accept': 'application/json',
+        'Accept': 'application/json',
         'Content-Type': 'application/json'
       }
     })
@@ -121,13 +169,12 @@ class InvestorSignupForm extends React.Component {
     console.log("component mounted");
   }
   
-  static getDerivedStateFromProps(props, state) {
-    if (state.loginMode !== props.mode ) {
-      return { loginMode: props.mode }
-    }
-
-    return null
-  }
+  // static getDerivedStateFromProps(props, state) {
+  //   if (state.loginMode !== props.mode ) {
+  //     return { loginMode: props.mode }
+  //   }
+  //   return null
+  // }
 
   render() {
 
@@ -135,6 +182,30 @@ class InvestorSignupForm extends React.Component {
     return (
       <Form id="signupForm" className="login-form" onSubmit={this.handleSubmit} noValidate>
         <Input type="hidden" name="captchaKey" value={this.state.data.captchaKey} />
+        <div className="login-form__switch" aria-label="choose login mode">
+          <div className="login-form__switch-item homei-switch">
+            <input 
+              type="radio" 
+              id="investor-mode" 
+              name="login-mode" 
+              value="investor" 
+              checked={this.state.loginMode === "investor"}
+              onChange={this.handleModeChange}
+            />
+            <Label htmlFor="investor-mode">אני רוצה להשקיע</Label>
+          </div>
+          <div className="login-form__switch-item homei-switch">
+            <input 
+              type="radio" 
+              id="borrower-mode" 
+              name="login-mode" 
+              value="borrower" 
+              checked={this.state.loginMode === "borrower"}
+              onChange={this.handleModeChange}
+            />
+            <Label htmlFor="borrower-mode">אני רוצה <span className='desktop-inline'>לבקש </span>הלוואה</Label>
+          </div>
+        </div>
         <Row className="login-form__row">
           <Col md="6" className="login-form__col">
             <FormGroup>
@@ -145,6 +216,7 @@ class InvestorSignupForm extends React.Component {
                 className="form-control placehlder-label" 
                 value={this.state.data.firstName} 
                 onChange={this.handleInputChange}
+                validators={[isRequired]} 
                 required 
               />
               <Label htmlFor="firstName" className="login-form__label">*שם פרטי</Label>
@@ -246,7 +318,7 @@ class InvestorSignupForm extends React.Component {
         </div>
 
         <div className="login-form__footer">
-          <Button type="submit" className="login-form__submit">
+          <Button type="submit" className="login-form__submit" disabled={!this.state.validity.form}>
             הרשמה
           </Button>
           <p className="login-form__footer-text">

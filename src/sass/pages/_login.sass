@@ -67,6 +67,7 @@
   max-width: 502px // ?
   margin-left: auto
   margin-right: auto
+  padding-bottom: 30px
   +rmin(1200)
     max-width: 502px
 
@@ -151,6 +152,30 @@
     +rmin(992)
       max-width: 50%
       flex: 0 0 50%
+
+  &__switch
+    width: 100%
+    display: flex
+    flex-wrap: nowrap
+    align-items: stretch
+    margin-bottom: 25px
+    padding-right: 0
+    border: 1px solid #7f7f7f
+    border-radius: 2px
+    +rmin(992)
+      margin-bottom: 30px
+
+    .desktop-inline
+      display: none
+      +rmin(992)
+        display: inline
+
+  &__switch-item
+    width: 50%
+    max-width: 50%
+    flex-basis: 50%
+    display: flex
+
 
   &__label
     position: absolute

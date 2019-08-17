@@ -12,7 +12,7 @@ class SigninMain extends React.Component {
           <div className="row">
             <div className="col-lg-6 col-content">
               <Switch>
-                <Route path="/signup" component={SignupContent} />
+                <Route exact path="/signup/:mode" component={SignupContent} />
                 <Route exact path="/password" component={PasswordContent} />
                 <Route exact path="/thanks" component={ThanksContent} />
                 <Route path="/email/_confirm" component={PasswordContent} />

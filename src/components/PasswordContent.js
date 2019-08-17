@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Label, Row, Col, FormGroup, Form, Input, UncontrolledTooltip } from 'reactstrap';
+import { Button, Label, FormGroup, Form, Input, UncontrolledTooltip } from 'reactstrap';
 // import { Switch, Route, Redirect } from 'react-router-dom';
 
 // Parsing query string
@@ -15,6 +15,35 @@ function getQueryStringParams(query) {
   return paramsObj;
 }
 
+const ValidationIndicator = (props) => {
+  console.log(props);
+  return (
+    <div className="validation-indicator">
+      <label className="validation-indicator__label">הסיסמה צריכה לכלול לפחות:</label>
+      <ul className="validation-indicator__list">
+        <li>
+          <div className="validation-checkbox">
+            <input id="letterIndicator" type="checkbox" disabled checked={props.hasLetter} />
+            <label htmlFor="letterIndicator">אותיות</label>
+          </div>
+        </li>
+        <li>
+          <div className="validation-checkbox">
+            <input id="numberIndicator" type="checkbox" disabled checked={props.hasNumeral} />
+            <label htmlFor="numberIndicator">מספרים</label>
+          </div>
+        </li>
+        <li>
+          <div className="validation-checkbox">
+            <input id="charIndicator" type="checkbox" disabled checked={props.hasSpecialChar} />
+            <label htmlFor="charIndicator">סימנים מיוחדים</label>
+          </div>
+        </li>
+      </ul>
+    </div>
+  )
+}
+
 class PasswordContent extends React.Component {
 
   constructor(props) {
@@ -24,11 +53,16 @@ class PasswordContent extends React.Component {
     this.state = {
       userId: '',
       code: '',
+      Password: '',
+      ConfirmPassword: ''
 
       // tooltipOpen: false
     }
 
     // this.toggleTooltip = this.toggleTooltip.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
 
   }
 
@@ -37,6 +71,50 @@ class PasswordContent extends React.Component {
   //     tooltipOpen: !this.state.tooltipOpen
   //   })
   // }
+
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+      // data: { ...this.state.data, [name]: value }
+    })
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+
+    let data = JSON.stringify(this.state.data);
+    console.log("current form data is: " + data);
+    // console.log(this.props);
+    this.props.history.push('/thanks');
+
+    fetch("", {
+      method: 'POST',
+      body: data,
+      // mode: 'no-cors',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw Error(res.statusText);
+        }
+        return res.json()
+      })
+      .then(response => console.log('Success: ', response))
+      .catch(error => console.error('Error: ', error))
+  }
+
+  handleBlur = (field) => (evt) => {
+    this.setState({
+      touched: { ...this.state.touched, [field]: true }
+    });
+  }
 
   componentDidMount() {
     console.log("mounted");
@@ -52,7 +130,7 @@ class PasswordContent extends React.Component {
   }
 
   render() {
-    console.log(this.state.userId, this.state.code);
+    console.log(this.state.userId, this.state.code, this.props);
     return (
       <div className="content login-content">
         <h1 className="login-content__heading">בחירת סיסמה</h1>
@@ -60,58 +138,40 @@ class PasswordContent extends React.Component {
         <Form id="verifyForm" className="login-form login-form--narrow" onSubmit={this.handleSubmit} noValidate>
           <FormGroup>
             <Input 
-              id="passVal" 
+              id="Password" 
               type="password" 
-              name="passVal" 
+              name="Password" 
               autoComplete="new-password" 
               required 
               className="form-control placehlder-label" 
+              value={this.state.Password} 
+              onChange={this.handleInputChange}
             />
-            <Label htmlFor="passVal" className="login-form__label">*בחירת סיסמה</Label>
+            <Label htmlFor="Password" className="login-form__label">*בחירת סיסמה</Label>
             <button id="formTooltipToggle" type="button" className="login-form__tooltip-btn">?</button>
             <UncontrolledTooltip placement="left" target="formTooltipToggle"  container=".form-group">
               הסיסמה צריכה לכלול 8 עד 12 תווים, כולל ספרות ואותיות
             </UncontrolledTooltip>
           </FormGroup>
 
-          <div className="validation-indicator">
-            <label className="validation-indicator__label">הסיסמה צריכה לכלול לפחות:</label>
-            <ul className="validation-indicator__list">
-              <li>
-                <div className="validation-checkbox">
-                  <input id="letterIndicator" type="checkbox" disabled />
-                  <label htmlFor="letterIndicator">אותיות</label>
-                </div>
-              </li>
-              <li>
-                <div className="validation-checkbox">
-                  <input id="numberIndicator" type="checkbox" disabled />
-                  <label htmlFor="numberIndicator">מספרים</label>
-                </div>
-              </li>
-              <li>
-                <div className="validation-checkbox">
-                  <input id="charIndicator" type="checkbox" disabled />
-                  <label htmlFor="charIndicator">סימנים מיוחדים</label>
-                </div>
-              </li>
-            </ul>
-          </div>
+          <ValidationIndicator hasLetter={false} hasNumeral={false} hasSpecialChar={false} />
 
           <FormGroup>
             <Input 
-              id="verifypassVal" 
+              id="ConfirmPassword" 
               type="password" 
-              name="verifypassVal" 
+              name="ConfirmPassword" 
               autoComplete="new-password" 
               required 
               className="form-control placehlder-label" 
+              value={this.state.ConfirmPassword}
+              onChange={this.handleInputChange}
             />
-            <Label htmlFor="verifypassVal" className="login-form__label">*הקלד סיסמה בשנית</Label>
+            <Label htmlFor="ConfirmPassword" className="login-form__label">*הקלד סיסמה בשנית</Label>
           </FormGroup>
 
           <div className="login-form__footer">
-            <Button type="submit" disabled className="login-form__submit">שמירה והמשך</Button>
+            <Button type="submit" disabled={false} className="login-form__submit">שמירה והמשך</Button>
           </div>
         </Form>
       </div>
