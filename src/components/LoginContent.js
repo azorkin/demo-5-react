@@ -1,8 +1,8 @@
 import React from 'react';
-import InvestorSignupForm from './Forms/InvestorSignupForm2';
+import LoginForm from './Forms/LoginForm';
 // import { Switch, Route, Redirect } from 'react-router-dom';
 
-class SignupContent extends React.Component {
+class LoginContent extends React.Component {
 
   render() {
 
@@ -15,11 +15,11 @@ class SignupContent extends React.Component {
     return (
       <div className="content login-content">
         <h1 className="login-content__heading">הרשמה</h1>
-        <InvestorSignupForm mode={signupMode}  />
-        {/* <InvestorSignupForm mode={this.props.match.params.mode} /> */}
+        {/* <LoginForm mode={signupMode}  /> */}
+        <LoginForm mode={this.props.match.params.mode} />
       </div>
     )
   }
 };
 
-export default SignupContent;
+export default LoginContent;
