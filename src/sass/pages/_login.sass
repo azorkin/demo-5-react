@@ -89,8 +89,6 @@
     +rmin(992)
       margin-bottom: 15px
 
-  
-
   &__nav-tabs
     width: 100%
     margin-bottom: 15px
@@ -98,7 +96,7 @@
     border: 1px solid #7f7f7f
     border-radius: 2px
     +rmin(992)
-      margin-bottom: 20px
+      margin-bottom: 30px
 
     .desktop-inline
       display: none
@@ -114,15 +112,31 @@
         background-color: #1a3865
         color: #fff
 
+    .nav-item
+      width: 50%
+      flex-basis: 50%
+
     .nav-link
+      display: block
       position: relative
       padding: 17px 10px
+      border: none
+      border-radius: 0
       font-size: 18px
       line-height: 21px
+      color: #1a3865
+      text-align: center
       &.active
         &:after
-          border-bottom-width: 8px
+          content: ''
+          position: absolute
           bottom: -1px
+          right: 50%
+          margin-right: -9px
+          border-bottom: 8px solid #fff
+          border-right: 9px solid transparent
+          border-left: 9px solid transparent
+          z-index: 1
 
   &__tab-content
     padding-top: 10px

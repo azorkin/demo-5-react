@@ -10,7 +10,6 @@ const borrowerSignupRequestURL = 'https://10.7.7.134/api/Borrower/_signup';
 
 // Validation rules
 const isRequired = (val) => !!(val && val.length);
-const hasLetterA = (val) => val.indexOf("A") > 0;
 const isValidEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(val);
 const isValidPhone = (val) => /^\+?(972|0)(-)?0?(([23489]{1}\d{7})|[5]{1}\d{8})$/i.test(val);
 
@@ -227,14 +226,15 @@ class InvestorSignupForm extends React.Component {
         'Content-Type': 'application/json'
       }
     })
-    .then(res => {
-      if (!res.ok) {
-        throw Error(res.statusText);
-      }
-      return res.json()
-    })
     .then(response => {
-      console.log('Success: ', response);
+      if (!response.ok) {
+        console.log(response)
+        throw Error(response.statusText);
+      }
+      return response.json()
+    })
+    .then(respJson => {
+      console.log('Success: ', respJson);
       this.props.history.push('/thanks');
     })
     .catch(error => console.error('Error: ', error))
@@ -424,7 +424,7 @@ class InvestorSignupForm extends React.Component {
         </div>
 
         <div className="login-form__footer">
-          <Button type="submit" className="login-form__submit" disabled={!this.state.formIsValid}>
+          <Button type="submit" className="login-form__submit" disabled={false && !this.state.formIsValid}>
             הרשמה
           </Button>
           <p className="login-form__footer-text">
