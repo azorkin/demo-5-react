@@ -11,18 +11,8 @@ const borrowerSignupRequestURL = 'https://10.7.7.134/api/Borrower/_signup';
 // Validation rules
 const isRequired = (val) => !!(val && val.length);
 const isValidEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(val);
-const isValidPhone = (val) => /^\+?(972|0)(-)?0?(([23489]{1}\d{7})|[5]{1}\d{8})$/i.test(val);
+const isValidPhone = (val) => /^\+?(972|0)(-)?0?(([23489]{1}\d{7})|[5]{1}\d{8})$/.test(val);
 
-
-// Custom error label component
-const ErrorLabel = (props) => {
-  console.log(props);
-  return (
-    <label htmlFor={props.forId} className="error">
-      {props.children}
-    </label>
-  )
-}
 
 class InvestorSignupForm extends React.Component {
 
@@ -228,16 +218,19 @@ class InvestorSignupForm extends React.Component {
     })
     .then(response => {
       if (!response.ok) {
-        console.log(response)
+        console.log(response.json())
         throw Error(response.statusText);
       }
       return response.json()
     })
     .then(respJson => {
       console.log('Success: ', respJson);
-      this.props.history.push('/thanks');
+      // this.props.history.push('/thanks');
     })
-    .catch(error => console.error('Error: ', error))
+    .catch(error => {
+      console.error('Error: ', error)
+      // this.props.history.push('/error');
+    })
   }
 
   handleBlur(event) {
@@ -379,7 +372,8 @@ class InvestorSignupForm extends React.Component {
               onBlur={this.handleBlurCheckbox} 
               required 
             />
-            <label htmlFor="cb1" className="homei-checkbox__label">אני מאשר את תנאי הסכם הצטרפות מלווה</label>
+            {this.state.loginMode === "borrower" && <label htmlFor="cb1" className="homei-checkbox__label">אני מאשר את <a href="https://www.home-invest.co.il/images/doc/%D7%94%D7%A1%D7%9B%D7%9D_%D7%94%D7%A6%D7%98%D7%A8%D7%A4%D7%95%D7%AA_%D7%9C%D7%95%D7%95%D7%94.pdf" target="_blank" rel="noopener noreferrer">תנאי הסכם הצטרפות לווה</a></label>}
+            {this.state.loginMode === "investor" && <label htmlFor="cb1" className="homei-checkbox__label">אני מאשר את <a href="https://www.home-invest.co.il/images/doc/%D7%94%D7%A1%D7%9B%D7%9D_%D7%94%D7%A6%D7%98%D7%A8%D7%A4%D7%95%D7%AA_%D7%9E%D7%9C%D7%95%D7%95%D7%94.pdf" target="_blank" rel="noopener noreferrer">תנאי הסכם הצטרפות משקיע</a></label>}
           </FormGroup>
           <FormGroup className="homei-checkbox">
             <Input
@@ -392,7 +386,7 @@ class InvestorSignupForm extends React.Component {
               onBlur={this.handleBlurCheckbox} 
               required
             />
-            <label htmlFor="cb2" className="homei-checkbox__label">אני מאשר את תנאי הסכם הלואה במיזם</label>
+            <label htmlFor="cb2" className="homei-checkbox__label">אני מאשר את <a href="https://www.home-invest.co.il/images/doc/%D7%94%D7%A1%D7%9B%D7%9D_%D7%94%D7%9C%D7%95%D7%95%D7%90%D7%94_%D7%91%D7%9E%D7%99%D7%96%D7%9D.pdf" target="_blank" rel="noopener noreferrer">תנאי הסכם הלואה במיזם</a></label>
           </FormGroup>
           <FormGroup className="homei-checkbox">
             <Input
@@ -405,7 +399,7 @@ class InvestorSignupForm extends React.Component {
               onBlur={this.handleBlurCheckbox} 
               required
             />
-            <label htmlFor="cb3" className="homei-checkbox__label">אני מאשר את תנאי השימוש</label>
+            <label htmlFor="cb3" className="homei-checkbox__label">אני מאשר את <a href="https://www.home-invest.co.il/images/doc/%D7%94%D7%99%D7%AA%D7%A8_%D7%A2%D7%A1%D7%A7%D7%94.pdf" target="_blank" rel="noopener noreferrer">תנאי השימוש</a></label>
           </FormGroup>
           <FormGroup className="homei-checkbox">
             <Input
@@ -418,13 +412,13 @@ class InvestorSignupForm extends React.Component {
               onBlur={this.handleBlurCheckbox} 
               required
             />
-            <label htmlFor="cb4" className="homei-checkbox__label">אני מאשר את שטר היתר העסקה</label>
+            <label htmlFor="cb4" className="homei-checkbox__label">אני מאשר את <a href="https://www.home-invest.co.il/%D7%AA%D7%A0%D7%90%D7%99-%D7%A9%D7%99%D7%9E%D7%95%D7%A9/" target="_blank" rel="noopener noreferrer">שטר היתר העסקה</a></label>
           </FormGroup>
           {!allCheckboxesChecked && allCheckboxesTouched && <label className="error">{combinedCheckboxError}</label>}
         </div>
 
         <div className="login-form__footer">
-          <Button type="submit" className="login-form__submit" disabled={false && !this.state.formIsValid}>
+          <Button type="submit" className="login-form__submit" disabled={!this.state.formIsValid}>
             הרשמה
           </Button>
           <p className="login-form__footer-text">

@@ -2,6 +2,17 @@ import React from 'react';
 import { Button, Label, FormGroup, Form, Input, UncontrolledTooltip } from 'reactstrap';
 // import { Switch, Route, Redirect } from 'react-router-dom';
 
+// API URLs
+const setPasswordURL = "https://10.7.7.134/api/Account/password/_set";
+
+// Validation rules
+const isRequired = (val) => !!(val && val.length);
+const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{6,12}$/.test(val);
+const isConfirmedPassword = (val, confirmedVal) => (val === confirmedVal);
+const hasNumber = (val) => /\d/.test(val);
+const hasLetter = (val) => /[a-z]/i.test(val);
+
+
 // Parsing query string
 function getQueryStringParams(query) {
   // query = query.substring(1);
@@ -33,12 +44,12 @@ const ValidationIndicator = (props) => {
             <label htmlFor="numberIndicator">מספרים</label>
           </div>
         </li>
-        <li>
+        {/* <li>
           <div className="validation-checkbox">
             <input id="charIndicator" type="checkbox" disabled checked={props.hasSpecialChar} />
             <label htmlFor="charIndicator">סימנים מיוחדים</label>
           </div>
-        </li>
+        </li> */}
       </ul>
     </div>
   )
@@ -47,7 +58,6 @@ const ValidationIndicator = (props) => {
 class PasswordContent extends React.Component {
 
   constructor(props) {
-
     super(props);
 
     this.state = {

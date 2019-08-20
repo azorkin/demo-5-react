@@ -8,8 +8,8 @@ const loginRequestURL = 'https://10.7.7.134/api/token';
 
 // Validation rules
 const isRequired = (val) => !!(val && val.length);
-const isValidEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(val);
-const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{6,12}$/i.test(val);
+const isValidEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(val);
+const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{6,12}$/.test(val);
 
 
 class LoginFormUser extends React.Component {
@@ -178,7 +178,7 @@ class LoginFormUser extends React.Component {
           />
           <Label htmlFor="Password" className="login-form__label">*שם משפחה</Label>
           <div className="text-left">
-            <a href="#">שכחתי סיסמה</a>
+            <a href="#forgottenPassword">שכחתי סיסמה</a>
           </div>
         </FormGroup>
 
