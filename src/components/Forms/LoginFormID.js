@@ -4,15 +4,46 @@ import { Button, Label, FormGroup, Form, Input } from 'reactstrap';
 import { Link, withRouter } from "react-router-dom";
 
 // API URLs
-const loginRequestURL = 'https://10.7.7.134/api/token';
+const loginRequestURL = 'https://10.7.7.134/api/Token/otp/request';
 
 // Validation rules
 const isRequired = (val) => !!(val && val.length);
 const isValidEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(val);
 const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{6,12}$/.test(val);
+const isValidDate = (val) => /^(?:(?:31(\/)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)\d{2})$|^(?:29(\/)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)\d{2})$/.test(val)
+const isValidId = (val) => {
+  var IDnum = String(val);
+
+  // Validate correct input
+  if ((IDnum.length > 9) || (IDnum.length < 5))
+    return false;
+  if (isNaN(IDnum))
+    return false;
+
+  // The number is too short - add leading 0000
+  if (IDnum.length < 9) {
+    while (IDnum.length < 9) {
+      IDnum = '0' + IDnum;
+    }
+  }
+
+  // CHECK THE ID NUMBER
+  var mone = 0, incNum;
+  for (var i = 0; i < 9; i++) {
+    incNum = Number(IDnum.charAt(i));
+    incNum *= (i % 2) + 1;
+    if (incNum > 9)
+      incNum -= 9;
+    mone += incNum;
+  }
+  if (mone % 10 == 0)
+    return true;
+  else
+    return false;
+}
 
 
-class LoginFormUser extends React.Component {
+class LoginFormID extends React.Component {
 
   constructor(props) {
     super(props);
@@ -21,23 +52,23 @@ class LoginFormUser extends React.Component {
 
       data: {
         CaptchaKey: 'dummystring',
-        Username: '',
-        Password: ''
+        TZ: '',
+        DateOfBirth: ''
       },
 
       touched: {
-        Username: false,
-        Password: false
+        TZ: false,
+        DateOfBirth: false
       },
 
       validity: {
-        Username: false,
-        Password: false
+        TZ: false,
+        DateOfBirth: false
       },
 
       errors: {
-        Username: '',
-        Password: ''
+        TZ: '',
+        DateOfBirth: ''
       },
 
       formIsValid: false,
@@ -62,28 +93,28 @@ class LoginFormUser extends React.Component {
     let fieldValidity = this.state.validity;
 
     switch (fieldName) {
-      case "Username":
+      case "TZ":
         if (!isRequired(value)) {
-          fieldValidity.Username = false;
-          fieldValidationErrors.Username = "שדה חובה"
-        } else if (!isValidEmail(value)) {
-          fieldValidity.Username = false;
-          fieldValidationErrors.Username = 'נא למלא אימייל'
+          fieldValidity.TZ = false;
+          fieldValidationErrors.TZ = "שדה חובה"
+        } else if (!isValidId(value)) {
+          fieldValidity.TZ = false;
+          fieldValidationErrors.TZ = 'נא למלא תעודת זהות/ דרכון'
         } else {
-          fieldValidity.Username = true;
-          fieldValidationErrors.Username = "";
+          fieldValidity.TZ = true;
+          fieldValidationErrors.TZ = "";
         }
         break
-      case "Password":
+      case "DateOfBirth":
         if (!isRequired(value)) {
-          fieldValidity.Password = false;
-          fieldValidationErrors.Password = "נא להקיש את סיסמתך"
-        } else if (!isValidPassword(value)) {
-          fieldValidity.Password = false;
-          fieldValidationErrors.Password = 'עלייך לבחור סיסמא בת 8-12 תווים כולל אותיות וספרות';
+          fieldValidity.DateOfBirth = false;
+          fieldValidationErrors.DateOfBirth = "נא למלא תאריך לידה"
+        } else if (!isValidDate(value)) {
+          fieldValidity.DateOfBirth = false;
+          fieldValidationErrors.DateOfBirth = 'פרטי המשתמש שגויים';
         } else {
-          fieldValidity.Password = true;
-          fieldValidationErrors.Password = "";
+          fieldValidity.DateOfBirth = true;
+          fieldValidationErrors.DateOfBirth = "";
         }
         break
       default:
@@ -160,38 +191,35 @@ class LoginFormUser extends React.Component {
   render() {
 
     return (
-      <Form id="loginFormUser" className="login-form" onSubmit={this.handleSubmit} noValidate>
+      <Form id="loginFormID" className="login-form" onSubmit={this.handleSubmit} noValidate>
         <input type="hidden" name="captchaKey" value={this.state.data.captchaKey} />
         <FormGroup>
           <Input 
-            type="email" 
-            id="Username" 
-            name="Username" 
+            type="text" 
+            id="TZ" 
+            name="TZ" 
             className="placehlder-label" 
-            value={this.state.data.Username} 
+            value={this.state.data.TZ} 
             onChange={this.handleTextInput}
             onBlur={this.handleBlur} 
             required 
           />
-          <Label htmlFor="Username" className="login-form__label">*דואר אלקטרוני</Label>
-          {!this.state.validity.Username && this.state.touched.Username && <label className="error">{this.state.errors.Username}</label>}
+          <Label htmlFor="TZ" className="login-form__label">*תעודת זהות</Label>
+          {!this.state.validity.TZ && this.state.touched.TZ && <label className="error">{this.state.errors.TZ}</label>}
         </FormGroup>
         <FormGroup>
           <Input 
-            type="password" 
-            id="Password" 
-            name="Password" 
+            type="text" 
+            id="DateOfBirth" 
+            name="DateOfBirth" 
             className="form-control placehlder-label" 
-            value={this.state.data.Password}
+            value={this.state.data.DateOfBirth}
             onChange={this.handleTextInput}
             onBlur={this.handleBlur} 
             required 
           />
-          <Label htmlFor="Password" className="login-form__label">*סיסמה</Label>
-          {!this.state.validity.Password && this.state.touched.Password && <label className="error">{this.state.errors.Password}</label>}
-          <div className="text-left">
-            <a href="#forgottenPassword">שכחתי סיסמה</a>
-          </div>
+          <Label htmlFor="DateOfBirth" className="login-form__label">*תאריך לידה</Label>
+          {!this.state.validity.DateOfBirth && this.state.touched.DateOfBirth && <label className="error">{this.state.errors.DateOfBirth}</label>}
         </FormGroup>
 
         <div className="login-form__footer">
@@ -209,4 +237,4 @@ class LoginFormUser extends React.Component {
   }
 }
 
-export default withRouter(LoginFormUser);
+export default withRouter(LoginFormID);

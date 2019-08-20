@@ -423,7 +423,7 @@ class InvestorSignupForm extends React.Component {
           </Button>
           <p className="login-form__footer-text">
             נרשמתם כבר?{" "}
-            <Link to="/login">היכנסו מכאן</Link>
+            <Link to='/login'>היכנסו מכאן</Link>
           </p>
         </div>
       </Form>

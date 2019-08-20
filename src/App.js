@@ -6,7 +6,7 @@ import './sass/app.sass';
 class App extends React.Component {
   render() {
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={'/homei-react'}>
         <ContentComponent />
       </BrowserRouter>
     )

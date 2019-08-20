@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import SignupContent from "./SignupContent";
 import PasswordContent from "./PasswordContent";
 import ThanksContent from "./ThanksContent";
@@ -14,15 +14,22 @@ class SigninMain extends React.Component {
           <div className="row">
             <div className="col-lg-6 col-content">
               <Switch>
-                <Route path={`${process.env.PUBLIC_URL}/signup`} component={SignupContent} />
-                {/* <Route exact path={`${process.env.PUBLIC_URL}/signup/:mode`} component={SignupContent} /> */}
+                <Route path="/signup" component={SignupContent} />
+                <Route exact path="/password" component={PasswordContent} />
+                <Route exact path="/thanks" component={ThanksContent} />
+                <Route path="/error" component={ErrorContent} />
+                <Route path="/email/_confirm" component={PasswordContent} />
+                <Route exact path="/login" component={LoginContent} />
+                <Redirect to="/" />
+                {/* <Route path={`${process.env.PUBLIC_URL}/signup`} component={SignupContent} />
                 <Route exact path={`${process.env.PUBLIC_URL}/password`} component={PasswordContent} />
                 <Route exact path={`${process.env.PUBLIC_URL}/thanks`} component={ThanksContent} />
-                < Route path={`${process.env.PUBLIC_URL}/error`} component={ErrorContent} />
-                < Route path={`${process.env.PUBLIC_URL}/email/_confirm`} component={PasswordContent} />
+                <Route path="/error" component={ErrorContent} />
+                <Route path={`${process.env.PUBLIC_URL}/email/_confirm`} component={PasswordContent} />
+                <Route exact path={`${process.env.PUBLIC_URL}/login`} component={LoginContent} /> */}
                 {/* <Route exact path={`${process.env.PUBLIC_URL}/forgot`} component={ForgotPasswordContent} /> */}
-                <Route exact path={`${process.env.PUBLIC_URL}/login`} component={LoginContent} />
                 {/* <Route exact path={`${process.env.PUBLIC_URL}/verify-phone`} component={VerifyPhoneContent} /> */}
+
               </Switch>
             </div>
             <div className="col-lg-6 col-img-login"></div>

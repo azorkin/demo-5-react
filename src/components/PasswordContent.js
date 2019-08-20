@@ -11,6 +11,7 @@ const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-
 const isConfirmedPassword = (val, confirmedVal) => (val === confirmedVal);
 const hasNumber = (val) => /\d/.test(val);
 const hasLetter = (val) => /[a-z]/i.test(val);
+const hasCapital = (val) => /[A-Z]/.test(val);
 
 
 // Parsing query string
@@ -44,12 +45,12 @@ const ValidationIndicator = (props) => {
             <label htmlFor="numberIndicator">מספרים</label>
           </div>
         </li>
-        {/* <li>
+        <li>
           <div className="validation-checkbox">
             <input id="charIndicator" type="checkbox" disabled checked={props.hasSpecialChar} />
-            <label htmlFor="charIndicator">סימנים מיוחדים</label>
+            <label htmlFor="charIndicator">אותיות גדולות</label>
           </div>
-        </li> */}
+        </li>
       </ul>
     </div>
   )
@@ -164,7 +165,7 @@ class PasswordContent extends React.Component {
             </UncontrolledTooltip>
           </FormGroup>
 
-          <ValidationIndicator hasLetter={false} hasNumeral={false} hasSpecialChar={false} />
+          <ValidationIndicator hasLetter={hasLetter(this.state.Password)} hasNumeral={hasNumber(this.state.Password)} hasSpecialChar={hasCapital(this.state.Password)} />
 
           <FormGroup>
             <Input 
