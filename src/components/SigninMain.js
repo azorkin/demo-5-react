@@ -5,6 +5,8 @@ import PasswordContent from "./PasswordContent";
 import ThanksContent from "./ThanksContent";
 import LoginContent from "./LoginContent";
 import ErrorContent from "./ErrorContent";
+import VerifyPhoneContent from "./VerifyPhone";
+
 
 class SigninMain extends React.Component {
   render() {
@@ -20,13 +22,15 @@ class SigninMain extends React.Component {
                 <Route path="/error" component={ErrorContent} />
                 <Route path="/email/_confirm" component={PasswordContent} />
                 <Route exact path="/login" component={LoginContent} />
+                <Route exact path="/verify-phone" component={VerifyPhoneContent} />
                 <Redirect to="/" />
                 {/* <Route path={`${process.env.PUBLIC_URL}/signup`} component={SignupContent} />
                 <Route exact path={`${process.env.PUBLIC_URL}/password`} component={PasswordContent} />
                 <Route exact path={`${process.env.PUBLIC_URL}/thanks`} component={ThanksContent} />
                 <Route path="/error" component={ErrorContent} />
                 <Route path={`${process.env.PUBLIC_URL}/email/_confirm`} component={PasswordContent} />
-                <Route exact path={`${process.env.PUBLIC_URL}/login`} component={LoginContent} /> */}
+                <Route exact path={`${process.env.PUBLIC_URL}/login`} component={LoginContent} />
+                <Redirect to={`${process.env.PUBLIC_URL}/`} /> */}
                 {/* <Route exact path={`${process.env.PUBLIC_URL}/forgot`} component={ForgotPasswordContent} /> */}
                 {/* <Route exact path={`${process.env.PUBLIC_URL}/verify-phone`} component={VerifyPhoneContent} /> */}
 

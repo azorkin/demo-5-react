@@ -9,7 +9,7 @@ const loginRequestURL = 'https://10.7.7.134/api/token';
 // Validation rules
 const isRequired = (val) => !!(val && val.length);
 const isValidEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(val);
-const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{6,12}$/.test(val);
+const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{8,12}$/.test(val);
 
 
 class LoginFormUser extends React.Component {
@@ -154,7 +154,7 @@ class LoginFormUser extends React.Component {
       touched: { ...this.state.touched, [name]: true }
     });
     this.validateUserInput(name, event.target.value);
-    console.log(this.state.touched);
+    // console.log(this.state.touched);
   }
 
   render() {

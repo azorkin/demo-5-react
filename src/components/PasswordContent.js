@@ -7,7 +7,7 @@ const setPasswordURL = "https://10.7.7.134/api/Account/password/_set";
 
 // Validation rules
 const isRequired = (val) => !!(val && val.length);
-const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{6,12}$/.test(val);
+const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{8,12}$/.test(val);
 const isConfirmedPassword = (val, confirmedVal) => (val === confirmedVal);
 const hasNumber = (val) => /\d/.test(val);
 const hasLetter = (val) => /[a-z]/i.test(val);
@@ -62,19 +62,40 @@ class PasswordContent extends React.Component {
     super(props);
 
     this.state = {
-      userId: '',
-      code: '',
-      Password: '',
-      ConfirmPassword: ''
+
+      data: {
+        userId: '',
+        code: '',
+        Password: '',
+        ConfirmPassword: ''
+      },
+
+      touched: {
+        Password: false,
+        ConfirmPassword: false
+      },
+
+      validity: {
+        Password: false,
+        ConfirmPassword: false
+      },
+
+      errors: {
+        Password: '',
+        ConfirmPassword: ''
+      },
+
+      formIsValid: false,
+      formServerOK: true,
+      formServerError: ""
 
       // tooltipOpen: false
     }
 
     // this.toggleTooltip = this.toggleTooltip.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleTextInput = this.handleTextInput.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
-
   }
 
   // toggleTooltip() {
@@ -83,26 +104,74 @@ class PasswordContent extends React.Component {
   //   })
   // }
 
-  handleInputChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
-      // data: { ...this.state.data, [name]: value }
-    })
+  handleTextInput(event) {
+    const name = event.target.name;
+    const value = event.target.value;
+    this.setState({ data: { ...this.state.data, [name]: value } },
+      () => { this.validateUserInput(name, value) });
   }
+
+  validateUserInput(fieldName, value) {
+    let fieldValidationErrors = this.state.errors;
+    let fieldValidity = this.state.validity;
+
+    switch (fieldName) {
+      case "Password":
+        if (!isRequired(value)) {
+          fieldValidity.Password = false;
+          fieldValidationErrors.Password = "שדה חובה"
+        } else if (!isValidPassword(value)) {
+          fieldValidity.Password = false;
+          fieldValidationErrors.Password = 'עלייך לבחור סיסמא בת 8-12 תווים כולל אותיות וספרות';
+        } else {
+          fieldValidity.Password = true;
+          fieldValidationErrors.Password = "";
+        }
+        break
+      case "ConfirmPassword":
+        if (!isRequired(value)) {
+          fieldValidity.ConfirmPassword = false;
+          fieldValidationErrors.ConfirmPassword = "שדה חובה"
+        } else if (!isConfirmedPassword(value, this.state.data.Password)) {
+          fieldValidity.ConfirmPassword = false;
+          fieldValidationErrors.ConfirmPassword = 'אין התאמה בין 2 הסיסמאות';
+        } else {
+          fieldValidity.ConfirmPassword = true;
+          fieldValidationErrors.ConfirmPassword = "";
+        }
+        break
+      default:
+        break;
+    }
+    this.setState({
+      validity: fieldValidity,
+      errors: fieldValidationErrors
+    }, this.validateForm);
+  }
+
+  validateForm() {
+    let currentFormIsValid = true;
+    for (let status of Object.values(this.state.validity)) {
+      console.log(status);
+      currentFormIsValid = status && currentFormIsValid;
+      if (!currentFormIsValid) break
+    }
+    this.setState({ formIsValid: currentFormIsValid });
+    console.log(this.state.validity, this.state.errors)
+  }
+
 
   handleSubmit(event) {
     event.preventDefault();
 
+    let currentSignupURL = setPasswordURL;
+
     let data = JSON.stringify(this.state.data);
     console.log("current form data is: " + data);
     // console.log(this.props);
-    this.props.history.push('/thanks');
+    // this.props.history.push('/thanks');
 
-    fetch("", {
+    fetch(currentSignupURL, {
       method: 'POST',
       body: data,
       // mode: 'no-cors',
@@ -111,29 +180,48 @@ class PasswordContent extends React.Component {
         'Content-Type': 'application/json'
       }
     })
-      .then(res => {
-        if (!res.ok) {
-          throw Error(res.statusText);
+      .then(response => {
+        if (!response.ok) {
+          console.log(response)
+          this.setState({ formServerOK: false });
+          if (response.status === 401) {
+            this.setState({ formServerError: "אסימון לא חוקי או שפג תוקפו" });
+          }
+          if (response.status === 400) {
+            this.setState({ formServerError: "Bad request" });
+          }
+          throw Error(response.statusText);
         }
-        return res.json()
+        this.setState({
+          formServerOK: true,
+          formServerError: ""
+        });
+        return response.json()
       })
-      .then(response => console.log('Success: ', response))
+      .then(respJson => {
+        console.log('Success: ', respJson);
+        this.props.history.push('/thanks');
+      })
       .catch(error => console.error('Error: ', error))
   }
 
-  handleBlur = (field) => (evt) => {
+  handleBlur(event) {
+    const name = event.target.name;
     this.setState({
-      touched: { ...this.state.touched, [field]: true }
+      touched: { ...this.state.touched, [name]: true }
     });
+    this.validateUserInput(name, event.target.value);
+    console.log(this.state.touched);
   }
 
   componentDidMount() {
     console.log("mounted");
     let confirmationParams = getQueryStringParams(this.props.location.search);
-    this.setState({
+    this.setState({data: { ...this.state.data,
       userId: confirmationParams.userId,
       code: confirmationParams.code
-    })
+    }});
+    console.log("mounted data: ", this.state.data);
   }
 
   componentDidUpdate() {
@@ -141,7 +229,6 @@ class PasswordContent extends React.Component {
   }
 
   render() {
-    console.log(this.state.userId, this.state.code, this.props);
     return (
       <div className="content login-content">
         <h1 className="login-content__heading">בחירת סיסמה</h1>
@@ -155,17 +242,19 @@ class PasswordContent extends React.Component {
               autoComplete="new-password" 
               required 
               className="form-control placehlder-label" 
-              value={this.state.Password} 
-              onChange={this.handleInputChange}
+              value={this.state.data.Password}
+              onChange={this.handleTextInput}
+              onBlur={this.handleBlur} 
             />
             <Label htmlFor="Password" className="login-form__label">*בחירת סיסמה</Label>
             <button id="formTooltipToggle" type="button" className="login-form__tooltip-btn">?</button>
             <UncontrolledTooltip placement="left" target="formTooltipToggle"  container=".form-group">
               הסיסמה צריכה לכלול 8 עד 12 תווים, כולל ספרות ואותיות
             </UncontrolledTooltip>
+            {!this.state.validity.Password && this.state.touched.Password && <label className="error">{this.state.errors.Password}</label>}
           </FormGroup>
 
-          <ValidationIndicator hasLetter={hasLetter(this.state.Password)} hasNumeral={hasNumber(this.state.Password)} hasSpecialChar={hasCapital(this.state.Password)} />
+          <ValidationIndicator hasLetter={hasLetter(this.state.data.Password)} hasNumeral={hasNumber(this.state.data.Password)} hasSpecialChar={hasCapital(this.state.data.Password)} />
 
           <FormGroup>
             <Input 
@@ -175,14 +264,17 @@ class PasswordContent extends React.Component {
               autoComplete="new-password" 
               required 
               className="form-control placehlder-label" 
-              value={this.state.ConfirmPassword}
-              onChange={this.handleInputChange}
+              value={this.state.data.ConfirmPassword}
+              onChange={this.handleTextInput}
+              onBlur={this.handleBlur} 
             />
             <Label htmlFor="ConfirmPassword" className="login-form__label">*הקלד סיסמה בשנית</Label>
+            {!this.state.validity.ConfirmPassword && this.state.touched.ConfirmPassword && <label className="error">{this.state.errors.ConfirmPassword}</label>}
           </FormGroup>
 
           <div className="login-form__footer">
-            <Button type="submit" disabled={false} className="login-form__submit">שמירה והמשך</Button>
+            {!this.state.formServerOK && <label className="error">{this.state.formServerError}</label>}
+            <Button type="submit" disabled={!this.state.formIsValid} className="login-form__submit">שמירה והמשך</Button>
           </div>
         </Form>
       </div>
