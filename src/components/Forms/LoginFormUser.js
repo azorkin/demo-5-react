@@ -1,15 +1,10 @@
 import React from 'react';
 import { Button, Label, FormGroup, Form, Input } from 'reactstrap';
-// import { Control, LocalForm, Errors, Fieldset } from 'react-redux-form';
 import { Link, withRouter } from "react-router-dom";
+import { isRequired, isValidEmail, isValidPassword } from "../../shared/Validation";
 
 // API URLs
 const loginRequestURL = 'https://10.7.7.134/api/token';
-
-// Validation rules
-const isRequired = (val) => !!(val && val.length);
-const isValidEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(val);
-const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{8,12}$/.test(val);
 
 
 class LoginFormUser extends React.Component {
@@ -145,7 +140,10 @@ class LoginFormUser extends React.Component {
       console.log('Success: ', respJson);
       this.props.history.push('/thanks');
     })
-    .catch(error => console.error('Error: ', error))
+    .catch(error => {
+      console.error('Error: ', error);
+      // this.props.history.push('/error');
+    })
   }
 
   handleBlur(event) {
@@ -167,7 +165,7 @@ class LoginFormUser extends React.Component {
             type="email" 
             id="Username" 
             name="Username" 
-            className="placehlder-label" 
+            className={!!this.state.data.Username ? "move-top" : ""} 
             value={this.state.data.Username} 
             onChange={this.handleTextInput}
             onBlur={this.handleBlur} 
@@ -181,7 +179,7 @@ class LoginFormUser extends React.Component {
             type="password" 
             id="Password" 
             name="Password" 
-            className="form-control placehlder-label" 
+            className={!!this.state.data.Password ? "move-top" : ""} 
             value={this.state.data.Password}
             onChange={this.handleTextInput}
             onBlur={this.handleBlur} 
@@ -195,7 +193,7 @@ class LoginFormUser extends React.Component {
         </FormGroup>
 
         <div className="login-form__footer">
-          {!this.state.formServerOK && <label className="error">{this.state.formServerError}</label>}
+          {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>}
           <Button type="submit" className="login-form__submit" disabled={!this.state.formIsValid}>
             כניסה
           </Button>

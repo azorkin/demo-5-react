@@ -26,6 +26,10 @@ label.error
   color: #a00202
   font-size: 16px
   line-height: 1
+  &--form-level
+    font-size: 20px
+    font-weight: 600
+    
   .form-group &
     margin-bottom: -1em
   .form-group--no-padding &
@@ -145,7 +149,6 @@ label.error
     width: 100%
     margin-bottom: 0
     // padding-right: 33px
-    position: relative
     padding: 17px 10px
     font-size: 18px
     line-height: 21px
@@ -164,6 +167,16 @@ label.error
     &:checked ~ label
       background-color: #f15a28
       color: #fff
+      &:after
+        content: ''
+        position: absolute
+        bottom: -1px
+        right: 50%
+        margin-right: -9px
+        border-bottom: 8px solid #fff
+        border-right: 9px solid transparent
+        border-left: 9px solid transparent
+        z-index: 1
 
     &:focus ~ label
       box-shadow: 0 0 0 1px white, 0 0 0 3px rgba(#0353a4, .4)

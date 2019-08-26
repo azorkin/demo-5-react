@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from '../img/logo.png';
 import { homeURL, navMenuData} from '../shared/Data';
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink} from 'reactstrap';
 // import ReadabilityComponent from "./ReadabilityComponent/ReadabilityComponent";
 import { Link } from 'react-router-dom'
 
@@ -8,8 +9,23 @@ class SiteHeader extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeMenuItem: 0
-    }
+      activeMenuItem: 0,
+      navbarIsOpen: false
+    };
+    this.toggleNavbar = this.toggleNavbar.bind(this);
+    this.closeNavbar = this.closeNavbar.bind(this)
+  }
+
+  toggleNavbar() {
+    this.setState({
+      navbarIsOpen: !this.state.navbarIsOpen
+    });
+  }
+
+  closeNavbar() {
+    this.setState({
+      navbarIsOpen: false
+    });
   }
 
   render() {
@@ -32,27 +48,20 @@ class SiteHeader extends React.Component {
 
     return (
       <header className="site-header">
-        <nav className="navbar navbar-expand-xl homei-navbar">
-          <button type="button" data-toggle="collapse" data-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation" className="navbar-toggler homei-navbar__toggle">
+        <Navbar expand="xl" className="homei-navbar">
+          <NavbarToggler onClick={this.toggleNavbar} data-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded={this.state.navbarIsOpen} aria-label="Toggle navigation" className="homei-navbar__toggle">
             <span className="navbar-toggler-icon"></span>
-          </button>
-          <a href={homeURL} aria-label="HOMEI home" className="navbar-brand homei-navbar__brand">
+          </NavbarToggler>
+          <NavbarBrand href={homeURL} aria-label="HOMEI home" className="homei-navbar__brand">
             <img src={logo} alt="Home Investment" className="homei-logo" />
-          </a>
+          </NavbarBrand>
           <a href="tel:073-3745000" aria-label="ליעוץ חינם התקשרו בטלפון" className="homei-navbar__call-mobile">
             <svg width="30" height="30">
               <use xlinkHref="#icon-phone"></use>
             </svg>
           </a>
-          <div id="mainNavbar" className="collapse navbar-collapse homei-navbar__collapse">
+          <Collapse navbar isOpen={this.state.navbarIsOpen} id="mainNavbar" className="homei-navbar__collapse">
             <ul className="navbar-nav homei-navbar__nav">
-              {/* <li className="nav-item active"><a href="#" className="nav-link">בית</a></li>
-              <li className="nav-item"><a href="#" className="nav-link">אודות</a></li>
-              <li className="nav-item"><a href="#" className="nav-link">איך זה עובד</a></li>
-              <li className="nav-item"><a href="#" className="nav-link">בתקשורת</a></li>
-              <li className="nav-item"><a href="#" className="nav-link">צור קשר</a></li>
-              <li className="nav-item"><a href="#" className="nav-link">מדיניות פרטיות</a></li>
-              <li className="nav-item"><a href="#" className="nav-link">הרשמה</a></li> */}
               {navMenu}
             </ul>
             <div className="homei-navbar__controls">
@@ -65,13 +74,13 @@ class SiteHeader extends React.Component {
                   <use xlinkHref="#icon-phone"></use>
                 </svg>
               </a>
-              <Link to="/signup/borrower" className="navbar-control navbar-control--borrower">
+              <Link to="/login" className="navbar-control navbar-control--borrower" onClick={this.closeNavbar}>
                 <svg width="37" height="37" aria-hidden="true">
                   <use xlinkHref="#icon-user"></use>
                 </svg>
                 <span className="navbar-control__caption">כניסת לווים</span>
               </Link>
-              <Link to="/signup/investor" className="navbar-control navbar-control--investor">
+              <Link to="/login" className="navbar-control navbar-control--investor" onClick={this.closeNavbar}>
                 <svg width="37" height="37" aria-hidden="true">
                   <use xlinkHref="#icon-user"></use>
                 </svg>
@@ -83,8 +92,8 @@ class SiteHeader extends React.Component {
                 </svg>
               </button>
             </div>
-          </div>
-        </nav>
+          </Collapse>
+        </Navbar>
       </header>
     )
   }

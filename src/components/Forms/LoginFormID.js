@@ -2,44 +2,10 @@ import React from 'react';
 import { Button, Label, FormGroup, Form, Input } from 'reactstrap';
 // import { Control, LocalForm, Errors, Fieldset } from 'react-redux-form';
 import { Link, withRouter } from "react-router-dom";
+import { isRequired, isValidDate, isValidId } from "../../shared/Validation";
 
 // API URLs
 const loginRequestURL = 'https://10.7.7.134/api/Token/otp/request';
-
-// Validation rules
-const isRequired = (val) => !!(val && val.length);
-const isValidDate = (val) => /^(?:(?:31(\/)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)\d{2})$|^(?:29(\/)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)\d{2})$/.test(val)
-const isValidId = (val) => {
-  var IDnum = String(val);
-
-  // Validate correct input
-  if ((IDnum.length > 9) || (IDnum.length < 5))
-    return false;
-  if (isNaN(IDnum))
-    return false;
-
-  // The number is too short - add leading 0000
-  if (IDnum.length < 9) {
-    while (IDnum.length < 9) {
-      IDnum = '0' + IDnum;
-    }
-  }
-
-  // CHECK THE ID NUMBER
-  var mone = 0, incNum;
-  for (var i = 0; i < 9; i++) {
-    incNum = Number(IDnum.charAt(i));
-    incNum *= (i % 2) + 1;
-    if (incNum > 9)
-      incNum -= 9;
-    mone += incNum;
-  }
-  if (mone % 10 === 0)
-    return true;
-  else
-    return false;
-}
-
 
 class LoginFormID extends React.Component {
 
@@ -168,11 +134,12 @@ class LoginFormID extends React.Component {
         formServerOK: true,
         formServerError: ""
       });
-      return response.json()
+      return response.json();
     })
     .then(respJson => {
       console.log('Success: ', respJson);
-      this.props.history.push('/thanks');
+      // this.props.history.push('/thanks');
+      this.props.handleSuccessfulSubmit(this.state.data.TZ, this.state.data.DateOfBirth);
     })
     .catch(error => console.error('Error: ', error))
   }
@@ -196,8 +163,8 @@ class LoginFormID extends React.Component {
             type="text" 
             id="TZ" 
             name="TZ" 
-            className="placehlder-label" 
             value={this.state.data.TZ} 
+            className={!!this.state.data.TZ ? "move-top" : ""}
             onChange={this.handleTextInput}
             onBlur={this.handleBlur} 
             required 
@@ -210,8 +177,8 @@ class LoginFormID extends React.Component {
             type="text" 
             id="DateOfBirth" 
             name="DateOfBirth" 
-            className="form-control placehlder-label" 
             value={this.state.data.DateOfBirth}
+            className={!!this.state.data.DateOfBirth ? "move-top" : ""}
             onChange={this.handleTextInput}
             onBlur={this.handleBlur} 
             required 
@@ -221,7 +188,7 @@ class LoginFormID extends React.Component {
         </FormGroup>
 
         <div className="login-form__footer">
-          {!this.state.formServerOK && <label className="error">{this.state.formServerError}</label>}
+          {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>}
           <Button type="submit" className="login-form__submit" disabled={!this.state.formIsValid}>
             כניסה
           </Button>

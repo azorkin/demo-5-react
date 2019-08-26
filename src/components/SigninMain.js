@@ -2,10 +2,12 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import SignupContent from "./SignupContent";
 import PasswordContent from "./PasswordContent";
+import ResetPasswordContent from "./ResetPasswordContent";
 import ThanksContent from "./ThanksContent";
 import LoginContent from "./LoginContent";
 import ErrorContent from "./ErrorContent";
 import VerifyPhoneContent from "./VerifyPhone";
+import ChooseAccountContent from "./ChooseAccountContent";
 
 
 class SigninMain extends React.Component {
@@ -21,9 +23,11 @@ class SigninMain extends React.Component {
                 <Route exact path="/thanks" component={ThanksContent} />
                 <Route path="/error" component={ErrorContent} />
                 <Route path="/email/_confirm" component={PasswordContent} />
+                <Route path="/password/_reset" component={ResetPasswordContent} />
                 <Route exact path="/login" component={LoginContent} />
                 <Route exact path="/verify-phone" component={VerifyPhoneContent} />
-                <Redirect to="/" />
+                <Route exact path="/choose-account" component={ChooseAccountContent} />
+                <Redirect to="/signup" />
                 {/* <Route path={`${process.env.PUBLIC_URL}/signup`} component={SignupContent} />
                 <Route exact path={`${process.env.PUBLIC_URL}/password`} component={PasswordContent} />
                 <Route exact path={`${process.env.PUBLIC_URL}/thanks`} component={ThanksContent} />

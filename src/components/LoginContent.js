@@ -2,6 +2,7 @@ import React from 'react';
 import LoginFormUser from './Forms/LoginFormUser';
 import LoginFormID from './Forms/LoginFormID';
 import {Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
+import OtpLogin from './OtpLoginComponent';
 // import classnames from 'classnames';
 
 
@@ -12,7 +13,7 @@ class LoginContent extends React.Component {
 
     this.toggleTabs = this.toggleTabs.bind(this);
     this.state = {
-      activeTab: "1"
+      activeTab: "2"
     }
   }
 
@@ -63,7 +64,7 @@ class LoginContent extends React.Component {
             <LoginFormUser />
           </TabPane>
           <TabPane tabId="2">
-            <LoginFormID />
+            <OtpLogin />
           </TabPane>
         </TabContent>
         

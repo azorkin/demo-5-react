@@ -1,5 +1,5 @@
 import React from 'react';
-import SvgSprite from './SvgSprite';
+import SvgSprite from '../shared/SvgSprite';
 import SiteHeader from './SiteHeader';
 import SiteFooter from './SiteFooter';
 import SigninMain from './SigninMain';

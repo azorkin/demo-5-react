@@ -3,7 +3,7 @@ import { Button, Label, FormGroup, Form, Input, UncontrolledTooltip } from 'reac
 // import { Switch, Route, Redirect } from 'react-router-dom';
 
 // API URLs
-const setPasswordURL = "https://10.7.7.134/api/Account/password/_set";
+const setPasswordURL = "https://10.7.7.134/api/Account/password/_reset";
 
 // Validation rules
 const isRequired = (val) => !!(val && val.length);
@@ -56,7 +56,7 @@ const ValidationIndicator = (props) => {
   )
 }
 
-class PasswordContent extends React.Component {
+class ResetPasswordContent extends React.Component {
 
   constructor(props) {
     super(props);
@@ -64,8 +64,8 @@ class PasswordContent extends React.Component {
     this.state = {
 
       data: {
-        userId: '',
-        code: '',
+        UserId: '',
+        Code: '',
         Password: '',
         ConfirmPassword: ''
       },
@@ -215,16 +215,16 @@ class PasswordContent extends React.Component {
   }
 
   componentDidMount() {
-    // let confirmationParams = getQueryStringParams(this.props.location.search);
-    let getURL = "https://10.7.7.134/api/Account/email/_confirm/" + this.props.location.search;
-    console.log("mounted", getURL);
-    // this.setState({data: { ...this.state.data,
-    //   userId: confirmationParams.userId,
-    //   code: confirmationParams.code
-    // }});
+    let confirmationParams = getQueryStringParams(this.props.location.search);
+    // let getURL = "https://10.7.7.134/api/Account/password/_reset" + this.props.location.search;
+    // console.log("mounted", getURL);
+    this.setState({data: { ...this.state.data,
+      UserId: confirmationParams.UID,
+      Code: confirmationParams.CODE
+    }});
     // console.log("mounted data: ", this.state.data);
 
-    fetch(getURL, {
+    /* fetch(getURL, {
       method: 'GET'
     })
     .then(response => {
@@ -250,14 +250,14 @@ class PasswordContent extends React.Component {
       this.setState({
         data: {
           ...this.state.data,
-          userId: respJson.UID,
-          code: respJson.CODE
+          UserId: respJson.UID,
+          Code: respJson.CODE
         }
       });
 
       // this.props.history.push('/thanks');
     })
-    .catch(error => console.error('Error: ', error))
+    .catch(error => console.error('Error: ', error)) */
   }
 
   componentDidUpdate() {
@@ -318,4 +318,4 @@ class PasswordContent extends React.Component {
   }
 };
 
-export default PasswordContent;
+export default ResetPasswordContent;

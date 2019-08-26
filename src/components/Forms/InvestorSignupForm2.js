@@ -204,8 +204,6 @@ class InvestorSignupForm extends React.Component {
     
     let data = JSON.stringify(this.state.data);
     console.log("current form data is: " + data);
-    // console.log(this.props);
-    // this.props.history.push('/thanks');
 
     fetch(currentSignupURL, {
       method: 'POST',
@@ -225,11 +223,11 @@ class InvestorSignupForm extends React.Component {
     })
     .then(respJson => {
       console.log('Success: ', respJson);
-      // this.props.history.push('/thanks');
+      this.props.history.push('/thanks');
     })
     .catch(error => {
-      console.error('Error: ', error)
-      // this.props.history.push('/error');
+      console.error('Error: ', error);
+      this.props.history.push('/error');
     })
   }
 
@@ -299,7 +297,7 @@ class InvestorSignupForm extends React.Component {
                 type="text" 
                 id="firstName" 
                 name="firstName" 
-                className="form-control placehlder-label" 
+                className={!!this.state.data.firstName ? "move-top" : ""}
                 value={this.state.data.firstName} 
                 onChange={this.handleTextInput}
                 onBlur={this.handleBlur}
@@ -316,7 +314,7 @@ class InvestorSignupForm extends React.Component {
                 type="text" 
                 id="lastName" 
                 name="lastName" 
-                className="form-control placehlder-label" 
+                className={!!this.state.data.lastName ? "move-top" : ""} 
                 value={this.state.data.lastName}
                 onChange={this.handleTextInput}
                 onBlur={this.handleBlur}
@@ -332,7 +330,7 @@ class InvestorSignupForm extends React.Component {
                 type="email" 
                 id="Email" 
                 name="Email" 
-                className="form-control placehlder-label" 
+                className={!!this.state.data.Email ? "move-top" : ""} 
                 value={this.state.data.Email}
                 onChange={this.handleTextInput}
                 onBlur={this.handleBlur}
@@ -348,7 +346,7 @@ class InvestorSignupForm extends React.Component {
                 type="tel" 
                 id="mobilePhone" 
                 name="mobilePhone" 
-                className="form-control placehlder-label" 
+                className={!!this.state.data.mobilePhone ? "move-top" : ""} 
                 value={this.state.data.mobilePhone}
                 onChange={this.handleTextInput}
                 onBlur={this.handleBlur}
