@@ -126,7 +126,7 @@ class LoginFormID extends React.Component {
         console.log(response)
         this.setState({formServerOK: false});
         if (response.status === 401) {
-          this.setState({ formServerError: "שם משתמש או סיסמה שגויים"});
+          this.setState({ formServerError: 'אחד או יותר מהנתונים שהזנת לא תקינים'});
         }
         throw Error(response.statusText);
       }

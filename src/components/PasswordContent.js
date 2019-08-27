@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Label, FormGroup, Form, Input, UncontrolledTooltip } from 'reactstrap';
-// import { Switch, Route, Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 // API URLs
 const setPasswordURL = "https://10.7.7.134/api/Account/password/_set";
@@ -98,12 +98,6 @@ class PasswordContent extends React.Component {
     this.handleBlur = this.handleBlur.bind(this);
   }
 
-  // toggleTooltip() {
-  //   this.setState({
-  //     tooltipOpen: !this.state.tooltipOpen
-  //   })
-  // }
-
   handleTextInput(event) {
     const name = event.target.name;
     const value = event.target.value;
@@ -160,7 +154,6 @@ class PasswordContent extends React.Component {
     console.log(this.state.validity, this.state.errors)
   }
 
-
   handleSubmit(event) {
     event.preventDefault();
 
@@ -199,10 +192,26 @@ class PasswordContent extends React.Component {
         return response.json()
       })
       .then(respJson => {
+        this.setToken(respJson);
         console.log('Success: ', respJson);
-        this.props.history.push('/thanks');
+        this.props.history.push('/verify-phone');
       })
       .catch(error => console.error('Error: ', error))
+  }
+
+  setToken(idToken) {
+    // Saves user token to localStorage
+    sessionStorage.setItem('homei_token', idToken);
+  }
+
+  getToken() {
+    // Retrieves the user token from localStorage
+    return sessionStorage.getItem('homei_token');
+  }
+
+  logout() {
+    // Clear user token and profile data from localStorage
+    sessionStorage.removeItem('homei_token');
   }
 
   handleBlur(event) {
@@ -254,10 +263,13 @@ class PasswordContent extends React.Component {
           code: respJson.CODE
         }
       });
-
-      // this.props.history.push('/thanks');
     })
-    .catch(error => console.error('Error: ', error))
+    .catch(error => {
+      console.error('Error: ', error);
+      setTimeout(() => {
+        this.props.history.push('/signup');
+      }, 3000);
+    })
   }
 
   componentDidUpdate() {
@@ -309,7 +321,7 @@ class PasswordContent extends React.Component {
           </FormGroup>
 
           <div className="login-form__footer">
-            {!this.state.formServerOK && <label className="error">{this.state.formServerError}</label>}
+            {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>}
             <Button type="submit" disabled={!this.state.formIsValid} className="login-form__submit">שמירה והמשך</Button>
           </div>
         </Form>
@@ -318,4 +330,4 @@ class PasswordContent extends React.Component {
   }
 };
 
-export default PasswordContent;
+export default withRouter(PasswordContent);

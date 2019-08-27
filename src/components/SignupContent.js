@@ -1,5 +1,5 @@
 import React from 'react';
-import InvestorSignupForm from './Forms/InvestorSignupForm2';
+import InvestorSignupForm from './Forms/InvestorSignupForm';
 // import { Switch, Route, Redirect } from 'react-router-dom';
 
 class SignupContent extends React.Component {
@@ -8,8 +8,8 @@ class SignupContent extends React.Component {
 
     // setting mode to borrower (default) or investor
     let signupPath = this.props.location.pathname;
-    let signupMode = "borrower";
-    if (signupPath.indexOf("investor") >= 0) signupMode = "investor"
+    let signupMode = "investor";
+    if (signupPath.indexOf("borrower") >= 0) signupMode = "borrower"
 
     console.log(signupPath, signupMode, this.props);
     return (

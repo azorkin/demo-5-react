@@ -45,7 +45,7 @@ class OtpLogin extends React.Component {
       case 1:
         return <LoginFormID handleSuccessfulSubmit={this.handleStep1} />;
       case 2:
-        return <VerifyPhoneForm handleSuccessfulSubmit={this.handleStep2} currentTZ={this.state.TZ} currentDoB={this.state.DateOfBirth} />;
+        return <VerifyPhoneForm handleSuccessfulSubmit={this.handleStep2} currentTZ={this.state.TZ} currentDoB={this.state.DateOfBirth} reason="login" />;
       case 3:
         return <h1>form sent - enter code - stage 3 </h1>;
       default:

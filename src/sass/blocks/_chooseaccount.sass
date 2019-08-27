@@ -29,9 +29,14 @@
     text-align: center
     box-shadow: 0 0 10px #ccc, inset 1px 1px 5px rgba(#ddd, .75)
     transition: all .3s
+    +rmin(992)
+      padding: 35px
+      font-size: 32px
     span
       display: block
       font-size: 16px
+      +rmin(992)
+        font-size: 24px
 
     &:focus,
     &:hover

@@ -127,6 +127,8 @@ class LoginFormUser extends React.Component {
         this.setState({formServerOK: false});
         if (response.status === 401) {
           this.setState({ formServerError: "שם משתמש או סיסמה שגויים"});
+        } else if (response.status === 403 ) {
+          this.setState({ formServerError: "..." });
         }
         throw Error(response.statusText);
       }
@@ -137,13 +139,29 @@ class LoginFormUser extends React.Component {
       return response.json()
     })
     .then(respJson => {
+      this.setToken(respJson);
       console.log('Success: ', respJson);
-      this.props.history.push('/thanks');
+      this.props.history.push('/choose-account');
     })
     .catch(error => {
       console.error('Error: ', error);
       // this.props.history.push('/error');
     })
+  }
+
+  setToken(idToken) {
+    // Saves user token to localStorage
+    sessionStorage.setItem('homei_token', idToken);
+  }
+
+  getToken() {
+    // Retrieves the user token from localStorage
+    return sessionStorage.getItem('homei_token');
+  }
+
+  logout() {
+    // Clear user token and profile data from localStorage
+    sessionStorage.removeItem('homei_token');
   }
 
   handleBlur(event) {
