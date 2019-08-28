@@ -8,6 +8,8 @@ const isValidEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(va
 
 const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{8,12}$/.test(val);
 
+const isConfirmedPassword = (val, confirmedVal) => (val === confirmedVal);
+
 const isValidPhone = (val) => /^\+?(972|0)(-)?0?(([23489]{1}\d{7})|[5]{1}\d{8})$/.test(val);
 
 const isValidId = (val) => {
@@ -43,5 +45,9 @@ const isValidId = (val) => {
 
 const isValidCode = (val) => /^\d{4,6}$/.test(val);
 
+const hasNumber = (val) => /\d/.test(val);
+const hasLetter = (val) => /[a-z]/i.test(val);
+const hasCapital = (val) => /[A-Z]/.test(val);
 
-export { isRequired, isValidDate, isValidId, isValidEmail, isValidPassword, isValidCode, isValidPhone };
+
+export { isRequired, isValidDate, isValidId, isValidEmail, isValidPassword, isConfirmedPassword, hasNumber, hasLetter, hasCapital, isValidCode, isValidPhone };

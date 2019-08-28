@@ -206,7 +206,7 @@ class LoginFormUser extends React.Component {
           <Label htmlFor="Password" className="login-form__label">*סיסמה</Label>
           {!this.state.validity.Password && this.state.touched.Password && <label className="error">{this.state.errors.Password}</label>}
           <div className="text-left">
-            <a href="#forgottenPassword">שכחתי סיסמה</a>
+            <Link to="/forgot-password">שכחתי סיסמה</Link>
           </div>
         </FormGroup>
 

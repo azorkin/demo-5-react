@@ -1,18 +1,10 @@
 import React from 'react';
 import { Button, Label, FormGroup, Form, Input, UncontrolledTooltip } from 'reactstrap';
-// import { Switch, Route, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import {isRequired, isValidPassword, isConfirmedPassword, hasNumber, hasLetter, hasCapital} from '../shared/Validation';
 
 // API URLs
 const setPasswordURL = "https://10.7.7.134/api/Account/password/_reset";
-
-// Validation rules
-const isRequired = (val) => !!(val && val.length);
-const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{8,12}$/.test(val);
-const isConfirmedPassword = (val, confirmedVal) => (val === confirmedVal);
-const hasNumber = (val) => /\d/.test(val);
-const hasLetter = (val) => /[a-z]/i.test(val);
-const hasCapital = (val) => /[A-Z]/.test(val);
-
 
 // Parsing query string
 function getQueryStringParams(query) {
@@ -87,7 +79,8 @@ class ResetPasswordContent extends React.Component {
 
       formIsValid: false,
       formServerOK: true,
-      formServerError: ""
+      formServerError: "",
+      formSubmittedSuccess: false
 
       // tooltipOpen: false
     }
@@ -199,10 +192,29 @@ class ResetPasswordContent extends React.Component {
         return response.json()
       })
       .then(respJson => {
+        this.setToken(respJson);
         console.log('Success: ', respJson);
-        this.props.history.push('/thanks');
+        this.setState({
+          formSubmittedSuccess: true
+        });
+        // this.props.history.push('/thanks');
       })
       .catch(error => console.error('Error: ', error))
+  }
+
+  setToken(idToken) {
+    // Saves user token to localStorage
+    sessionStorage.setItem('homei_token', idToken);
+  }
+
+  getToken() {
+    // Retrieves the user token from localStorage
+    return sessionStorage.getItem('homei_token');
+  }
+
+  logout() {
+    // Clear user token and profile data from localStorage
+    sessionStorage.removeItem('homei_token');
   }
 
   handleBlur(event) {
@@ -216,105 +228,82 @@ class ResetPasswordContent extends React.Component {
 
   componentDidMount() {
     let confirmationParams = getQueryStringParams(this.props.location.search);
-    // let getURL = "https://10.7.7.134/api/Account/password/_reset" + this.props.location.search;
-    // console.log("mounted", getURL);
+    console.log(this.props.location.search);
     this.setState({data: { ...this.state.data,
       UserId: confirmationParams.UID,
       Code: confirmationParams.CODE
     }});
-    // console.log("mounted data: ", this.state.data);
-
-    /* fetch(getURL, {
-      method: 'GET'
-    })
-    .then(response => {
-      if (!response.ok) {
-        console.log(response)
-        this.setState({ formServerOK: false });
-        if (response.status === 401) {
-          this.setState({ formServerError: "אסימון לא חוקי או שפג תוקפו" });
-        }
-        if (response.status === 400) {
-          this.setState({ formServerError: "Bad request" });
-        }
-        throw Error(response.statusText);
-      }
-      this.setState({
-        formServerOK: true,
-        formServerError: ""
-      });
-      return response.json()
-    })
-    .then(respJson => {
-      console.log('Success: ', respJson);
-      this.setState({
-        data: {
-          ...this.state.data,
-          UserId: respJson.UID,
-          Code: respJson.CODE
-        }
-      });
-
-      // this.props.history.push('/thanks');
-    })
-    .catch(error => console.error('Error: ', error)) */
+    console.log("mounted data: ", this.state.data);
   }
 
   componentDidUpdate() {
-    console.log("updated");
+    console.log("updated data: ", this.state.data);
   }
 
   render() {
-    return (
-      <div className="content login-content">
-        <h1 className="login-content__heading">בחירת סיסמה</h1>
 
-        <Form id="verifyForm" className="login-form login-form--narrow" onSubmit={this.handleSubmit} noValidate>
-          <FormGroup>
-            <Input 
-              id="Password" 
-              type="password" 
-              name="Password" 
-              autoComplete="new-password" 
-              required 
-              className="form-control placehlder-label" 
-              value={this.state.data.Password}
-              onChange={this.handleTextInput}
-              onBlur={this.handleBlur} 
-            />
-            <Label htmlFor="Password" className="login-form__label">*בחירת סיסמה</Label>
-            <button id="formTooltipToggle" type="button" className="login-form__tooltip-btn">?</button>
-            <UncontrolledTooltip placement="left" target="formTooltipToggle"  container=".form-group">
-              הסיסמה צריכה לכלול 8 עד 12 תווים, כולל ספרות ואותיות
-            </UncontrolledTooltip>
-            {!this.state.validity.Password && this.state.touched.Password && <label className="error">{this.state.errors.Password}</label>}
-          </FormGroup>
+    if (this.state.formSubmittedSuccess) {
 
-          <ValidationIndicator hasLetter={hasLetter(this.state.data.Password)} hasNumeral={hasNumber(this.state.data.Password)} hasSpecialChar={hasCapital(this.state.data.Password)} />
+      return (
+        <div className="content login-content">
+          <p>Password was successfilly reset.</p>
+          <p>You can proceed to <Link to="/login">Login</Link></p>
+        </div>
+      )
+    
+    } else {
 
-          <FormGroup>
-            <Input 
-              id="ConfirmPassword" 
-              type="password" 
-              name="ConfirmPassword" 
-              autoComplete="new-password" 
-              required 
-              className="form-control placehlder-label" 
-              value={this.state.data.ConfirmPassword}
-              onChange={this.handleTextInput}
-              onBlur={this.handleBlur} 
-            />
-            <Label htmlFor="ConfirmPassword" className="login-form__label">*הקלד סיסמה בשנית</Label>
-            {!this.state.validity.ConfirmPassword && this.state.touched.ConfirmPassword && <label className="error">{this.state.errors.ConfirmPassword}</label>}
-          </FormGroup>
+      return (
+        <div className="content login-content">
+          <h1 className="login-content__heading">בחירת סיסמה</h1>
 
-          <div className="login-form__footer">
-            {!this.state.formServerOK && <label className="error">{this.state.formServerError}</label>}
-            <Button type="submit" disabled={!this.state.formIsValid} className="login-form__submit">שמירה והמשך</Button>
-          </div>
-        </Form>
-      </div>
-    )
+          <Form id="verifyForm" className="login-form login-form--narrow" onSubmit={this.handleSubmit} noValidate>
+            <FormGroup>
+              <Input 
+                id="Password" 
+                type="password" 
+                name="Password" 
+                autoComplete="new-password" 
+                required 
+                className="form-control placehlder-label" 
+                value={this.state.data.Password}
+                onChange={this.handleTextInput}
+                onBlur={this.handleBlur} 
+              />
+              <Label htmlFor="Password" className="login-form__label">*בחירת סיסמה</Label>
+              <button id="formTooltipToggle" type="button" className="login-form__tooltip-btn">?</button>
+              <UncontrolledTooltip placement="left" target="formTooltipToggle"  container=".form-group">
+                הסיסמה צריכה לכלול 8 עד 12 תווים, כולל ספרות ואותיות
+              </UncontrolledTooltip>
+              {!this.state.validity.Password && this.state.touched.Password && <label className="error">{this.state.errors.Password}</label>}
+            </FormGroup>
+
+            <ValidationIndicator hasLetter={hasLetter(this.state.data.Password)} hasNumeral={hasNumber(this.state.data.Password)} hasSpecialChar={hasCapital(this.state.data.Password)} />
+
+            <FormGroup>
+              <Input 
+                id="ConfirmPassword" 
+                type="password" 
+                name="ConfirmPassword" 
+                autoComplete="new-password" 
+                required 
+                className="form-control placehlder-label" 
+                value={this.state.data.ConfirmPassword}
+                onChange={this.handleTextInput}
+                onBlur={this.handleBlur} 
+              />
+              <Label htmlFor="ConfirmPassword" className="login-form__label">*הקלד סיסמה בשנית</Label>
+              {!this.state.validity.ConfirmPassword && this.state.touched.ConfirmPassword && <label className="error">{this.state.errors.ConfirmPassword}</label>}
+            </FormGroup>
+
+            <div className="login-form__footer">
+              {!this.state.formServerOK && <label className="error">{this.state.formServerError}</label>}
+              <Button type="submit" disabled={!this.state.formIsValid} className="login-form__submit">שמירה והמשך</Button>
+            </div>
+          </Form>
+        </div>
+      )
+    }
   }
 };
 

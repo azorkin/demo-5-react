@@ -8,6 +8,7 @@ import LoginContent from "./LoginContent";
 import ErrorContent from "./ErrorContent";
 import VerifyPhoneContent from "./VerifyPhone";
 import ChooseAccountContent from "./ChooseAccountContent";
+import ForgotPasswordComponent from "./ForgotPasswordComponent";
 
 
 class SigninMain extends React.Component {
@@ -27,6 +28,7 @@ class SigninMain extends React.Component {
                 <Route exact path="/login" component={LoginContent} />
                 <Route exact path="/verify-phone" component={VerifyPhoneContent} />
                 <Route exact path="/choose-account" component={ChooseAccountContent} />
+                <Route exact path="/forgot-password" component={ForgotPasswordComponent} />
                 <Redirect to="/signup" />
                 {/* <Route path={`${process.env.PUBLIC_URL}/signup`} component={SignupContent} />
                 <Route exact path={`${process.env.PUBLIC_URL}/password`} component={PasswordContent} />
