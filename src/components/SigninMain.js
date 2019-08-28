@@ -6,7 +6,7 @@ import ResetPasswordContent from "./ResetPasswordContent";
 import ThanksContent from "./ThanksContent";
 import LoginContent from "./LoginContent";
 import ErrorContent from "./ErrorContent";
-import VerifyPhoneContent from "./VerifyPhone";
+import VerifyPhoneContent from "./VerifyPhoneContent";
 import ChooseAccountContent from "./ChooseAccountContent";
 import ForgotPasswordComponent from "./ForgotPasswordComponent";
 

@@ -1,14 +1,12 @@
 import React from 'react';
 import LoginFormID from './Forms/LoginFormID';
-import VerifyPhoneForm from './Forms/VerifyPhoneForm';
+import VerifyPhoneLoginForm from './Forms/VerifyPhoneLoginForm';
 // import { Button, Label, FormGroup, Form, Input } from 'reactstrap';
 // import { Control, LocalForm, Errors, Fieldset } from 'react-redux-form';
 // import { Link, withRouter } from "react-router-dom";
 
 // API URLs
 const loginRequestURL = 'https://10.7.7.134/api/Token/otp/request';
-
-
 
 class OtpLogin extends React.Component {
 
@@ -45,7 +43,7 @@ class OtpLogin extends React.Component {
       case 1:
         return <LoginFormID handleSuccessfulSubmit={this.handleStep1} />;
       case 2:
-        return <VerifyPhoneForm handleSuccessfulSubmit={this.handleStep2} currentTZ={this.state.TZ} currentDoB={this.state.DateOfBirth} reason="login" />;
+        return <VerifyPhoneLoginForm handleSuccessfulSubmit={this.handleStep2} currentTZ={this.state.TZ} currentDoB={this.state.DateOfBirth} />;
       case 3:
         return <h1>form sent - enter code - stage 3 </h1>;
       default:

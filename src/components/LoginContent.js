@@ -1,6 +1,5 @@
 import React from 'react';
 import LoginFormUser from './Forms/LoginFormUser';
-import LoginFormID from './Forms/LoginFormID';
 import {Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
 import OtpLogin from './OtpLoginComponent';
 // import classnames from 'classnames';

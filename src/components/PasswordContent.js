@@ -1,18 +1,10 @@
 import React from 'react';
 import { Button, Label, FormGroup, Form, Input, UncontrolledTooltip } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
+import { isRequired, isValidPassword, isConfirmedPassword, hasNumber, hasLetter, hasCapital } from '../shared/Validation';
 
 // API URLs
 const setPasswordURL = "https://10.7.7.134/api/Account/password/_set";
-
-// Validation rules
-const isRequired = (val) => !!(val && val.length);
-const isValidPassword = (val) => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{8,12}$/.test(val);
-const isConfirmedPassword = (val, confirmedVal) => (val === confirmedVal);
-const hasNumber = (val) => /\d/.test(val);
-const hasLetter = (val) => /[a-z]/i.test(val);
-const hasCapital = (val) => /[A-Z]/.test(val);
-
 
 // Parsing query string
 function getQueryStringParams(query) {

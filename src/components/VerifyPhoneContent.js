@@ -1,5 +1,9 @@
 import React from 'react';
-import VerifyPhoneForm from "./Forms/VerifyPhoneForm";
+import VerifyPhoneForm from "./Forms/VerifyPhoneSignupForm";
+
+const requestVerification = () => {
+  
+}
 
 class VerifyPhoneContent extends React.Component {
 
@@ -8,8 +12,10 @@ class VerifyPhoneContent extends React.Component {
 
     this.state = {
       formServerOK: true,
-      formServerError: ""
+      formServerError: "",
+      userPhone: ""
     }
+    this.requestVerification = this.requestVerification.bind(this);
   }
 
   getToken() {
@@ -17,10 +23,9 @@ class VerifyPhoneContent extends React.Component {
     return sessionStorage.getItem('homei_token');
   }
 
-  componentDidMount() {
-
+  requestVerification() {
     const verifyPhoneRequestURL = "https://10.7.7.134/api/Account/phone/verify/request"
-    let currentToken = this.getToken();
+    let currentToken = sessionStorage.getItem('homei_token');
 
     if (true) {
       fetch(verifyPhoneRequestURL, {
@@ -43,29 +48,38 @@ class VerifyPhoneContent extends React.Component {
           }
           this.setState({
             formServerOK: true,
-            formServerError: ""
+            formServerError: "",
+            // userPhone: response
           });
-          return response.json()
+          console.log(response)
+          return response.text()
         })
-        .then(respJson => {
-          console.log('Success: ', respJson);
+        .then(respText => {
+          this.setState({
+            userPhone: respText
+          })
+          console.log('Success: ', respText);
         })
         .catch(error => {
           console.error('Error: ', error);
-          setTimeout(() => {
-            this.props.history.push('/login');
-          }, 3000);
+          // setTimeout(() => {
+          //   this.props.history.push('/login');
+          // }, 3000);
         })
     }
+  }
+
+  componentDidMount() {
+    this.requestVerification()
   }
 
   render() {
     return (
       <div className="content login-content">
         <h1 className="login-content__heading">אימות מספר טלפון</h1>
-        <p className="login-content__lead">נכנסים לאזור האישי עם הקוד ששלחנו ב-sms למספר <a href="tel:0548097654">054-8097654</a></p>
+        <p className="login-content__lead">נכנסים לאזור האישי עם הקוד ששלחנו ב-sms למספר {this.state.userPhone}</p>
 
-        <VerifyPhoneForm reason="signup" />
+        <VerifyPhoneForm resendCode={this.requestVerification} />
 
         {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>}
       </div>

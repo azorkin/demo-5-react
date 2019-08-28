@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from '../img/logo.png';
 import { homeURL, navMenuData} from '../shared/Data';
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink} from 'reactstrap';
+import { Collapse, Navbar, NavbarToggler, NavbarBrand} from 'reactstrap';
 // import ReadabilityComponent from "./ReadabilityComponent/ReadabilityComponent";
 import { Link } from 'react-router-dom'
 
