@@ -86,11 +86,11 @@ class SiteHeader extends React.Component {
                 </svg>
                 <span className="navbar-control__caption">כניסת משקיעים</span>
               </Link>
-              <button type="button" aria-label="toggle accessibility" className="navbar-control navbar-control--accessibility">
+              {/* <button type="button" aria-label="toggle accessibility" className="navbar-control navbar-control--accessibility">
                 <svg width="24" height="29" aria-hidden="true">
                   <use xlinkHref="#icon-accessibility"></use>
                 </svg>
-              </button>
+              </button> */}
             </div>
           </Collapse>
         </Navbar>

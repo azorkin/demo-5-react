@@ -4,12 +4,16 @@ import { Button, Label, Row, Col, FormGroup, Form, Input } from 'reactstrap';
 import { Link, withRouter } from "react-router-dom";
 import { isRequired, isValidEmail, isValidPhone } from "../../shared/Validation";
 import FormLevelError from "./FormLevelError";
+import HomeiAPI from "../../shared/HomeiAPI";
+import Spinner from "../Spinner";
 
 // API URLs
-const investorSignupRequestURL = 'https://10.7.7.134/api/Investor/_signup';
-const borrowerSignupRequestURL = 'https://10.7.7.134/api/Borrower/_signup';
+// const investorSignupRequestURL = 'https://10.7.7.134/api/Investor/_signup';
+// const borrowerSignupRequestURL = 'https://10.7.7.134/api/Borrower/_signup';
 
-class InvestorSignupForm extends React.Component {
+const { investorSignupRequestURL, borrowerSignupRequestURL } = HomeiAPI;
+
+class SignupForm extends React.Component {
 
   constructor(props) {
     super(props);
@@ -65,7 +69,9 @@ class InvestorSignupForm extends React.Component {
       formIsValid: false,
       formServerOK: true,
       formServerError: "",
-      formServerStatus: null
+      formServerStatus: null,
+
+      contactingServer: false
 
     };
 
@@ -184,12 +190,12 @@ class InvestorSignupForm extends React.Component {
   validateForm() {
     let currentFormIsValid = true;
     for (let status of Object.values(this.state.validity)) {
-      console.log(status);
+      // console.log(status);
       currentFormIsValid = status && currentFormIsValid;
       if (!currentFormIsValid) break
     }
     this.setState({ formIsValid: currentFormIsValid });
-    console.log(this.state.validity , this.state.errors)
+    // console.log(this.state.validity , this.state.errors)
   }
 
   handleSubmit(event) {
@@ -203,10 +209,14 @@ class InvestorSignupForm extends React.Component {
     let data = JSON.stringify(this.state.data);
     console.log("current form data is: " + data);
 
+    this.setState({
+      contactingServer: true
+    });
+
     fetch(currentSignupURL, {
       method: 'POST',
       body: data,
-      // mode: 'no-cors',
+      mode: 'no-cors',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -214,10 +224,12 @@ class InvestorSignupForm extends React.Component {
     })
     .then(response => {
       if (!response.ok) {
-        console.log(response.json())
+        // console.log(response.json());
+        console.log(response.status);
         this.setState({ 
           formServerOK: false,
-          formServerStatus: response.status
+          formServerStatus: response.status,
+          contactingServer: false
         });
         /* if (response.status === 401) {
           this.setState({ formServerError: "אסימון לא חוקי או שפג תוקפו" });
@@ -232,7 +244,8 @@ class InvestorSignupForm extends React.Component {
       }
       this.setState({
         formServerOK: true,
-        formServerError: ""
+        formServerError: "",
+        contactingServer: false
       });
       return response.json()
     })
@@ -242,6 +255,12 @@ class InvestorSignupForm extends React.Component {
     })
     .catch(error => {
       console.error('Error: ', error);
+      this.setState({
+        formServerOK: false,
+        formServerError: "server connection error",
+        // formServerStatus: '',
+        contactingServer: false
+      });
       // this.props.history.push('/error');
     })
   }
@@ -418,9 +437,12 @@ class InvestorSignupForm extends React.Component {
         <div className="login-form__footer">
           {/* {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>} */}
           {!this.state.formServerOK && <FormLevelError status={this.state.formServerStatus} />}
-          <Button type="submit" className="login-form__submit" disabled={!this.state.formIsValid}>
+
+          <Button type="submit" className="login-form__submit" disabled={!this.state.formIsValid || this.state.contactingServer}>
+            {this.state.contactingServer && <Spinner className="login-form__spinner-elem" />}
             הרשמה
           </Button>
+          
           <p className="login-form__footer-text">
             נרשמתם כבר?{" "}
             <Link to='/login'>היכנסו מכאן</Link>
@@ -431,4 +453,4 @@ class InvestorSignupForm extends React.Component {
   }
 }
 
-export default withRouter(InvestorSignupForm);
+export default withRouter(SignupForm);

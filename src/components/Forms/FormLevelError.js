@@ -3,6 +3,18 @@ import { Link } from 'react-router-dom';
 
 const FormLevelError = (props) => {
   switch (props.status) {
+    case 401:
+      return (
+        <label className="error error--form-level">
+          אסימון לא חוקי או שפג תוקפו
+        </label>
+      );
+    case 404:
+      return (
+        <label className="error error--form-level">
+          resourse not found
+        </label>
+      );
     case 409:
       return (
         <label className="error error--form-level">
@@ -14,7 +26,12 @@ const FormLevelError = (props) => {
         </label>
       );
     default:
-      return null;
+      return (
+        <label className="error error--form-level">
+          בעיית חיבור
+        </label>
+      );
+      // return null;
   }
 }
 
