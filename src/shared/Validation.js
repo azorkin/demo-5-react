@@ -43,7 +43,8 @@ const isValidId = (val) => {
     return false;
 };
 
-const isValidCode = (val) => /^\d{4,6}$/.test(val);
+// const isValidCode = (val) => /^\d{4,6}$/.test(val);
+const isValidCode = (val) => /^\d{6}$/.test(val);
 
 const hasNumber = (val) => /\d/.test(val);
 const hasLetter = (val) => /[a-z]/i.test(val);

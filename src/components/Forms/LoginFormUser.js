@@ -2,10 +2,10 @@ import React from 'react';
 import { Button, Label, FormGroup, Form, Input } from 'reactstrap';
 import { Link, withRouter } from "react-router-dom";
 import { isRequired, isValidEmail, isValidPassword } from "../../shared/Validation";
+import HomeiAPI from "../../shared/HomeiAPI";
 
 // API URLs
-const loginRequestURL = 'https://10.7.7.134/api/token';
-
+const {loginRequestURL} = HomeiAPI;
 
 class LoginFormUser extends React.Component {
 

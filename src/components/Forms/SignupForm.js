@@ -8,9 +8,6 @@ import HomeiAPI from "../../shared/HomeiAPI";
 import Spinner from "../Spinner";
 
 // API URLs
-// const investorSignupRequestURL = 'https://10.7.7.134/api/Investor/_signup';
-// const borrowerSignupRequestURL = 'https://10.7.7.134/api/Borrower/_signup';
-
 const { investorSignupRequestURL, borrowerSignupRequestURL } = HomeiAPI;
 
 class SignupForm extends React.Component {
@@ -206,6 +203,9 @@ class SignupForm extends React.Component {
       currentSignupURL = borrowerSignupRequestURL;
     }
     
+    // let currentData = {...this.state.data};
+    // delete currentData.isConfirm4;
+
     let data = JSON.stringify(this.state.data);
     console.log("current form data is: " + data);
 
@@ -216,7 +216,7 @@ class SignupForm extends React.Component {
     fetch(currentSignupURL, {
       method: 'POST',
       body: data,
-      mode: 'no-cors',
+      // mode: 'no-cors',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -240,7 +240,7 @@ class SignupForm extends React.Component {
         else if (response.status === 409) {
           this.setState({ formServerError: "הפרטים שהזנת נמצאו במערכותינו הכנס מכאן" });
         }  */
-        throw Error(response.statusText);
+        // throw Error(response.statusText);
       }
       this.setState({
         formServerOK: true,
@@ -261,7 +261,7 @@ class SignupForm extends React.Component {
         // formServerStatus: '',
         contactingServer: false
       });
-      // this.props.history.push('/error');
+      this.props.history.push('/error');
     })
   }
 

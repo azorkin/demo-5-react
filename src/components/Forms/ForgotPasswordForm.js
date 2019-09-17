@@ -1,11 +1,12 @@
 import React from 'react';
 import { Button, Label, FormGroup, Form, Input, Row, Col } from 'reactstrap';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { isRequired, isValidEmail } from "../../shared/Validation";
+import HomeiAPI from "../../shared/HomeiAPI";
 
 
 // API URLs
-const resetPasswordURL = "https://10.7.7.134/api/Account/password/reset/request";
+const {resetPasswordURL} = HomeiAPI;
 
 class ForgotPasswordForm extends React.Component {
 

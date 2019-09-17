@@ -1,5 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import HomeiAPI from "../shared/HomeiAPI";
+
+
+const { checkRoleURL } = HomeiAPI;
+
 
 class ChooseAccountContent extends React.Component {
   constructor(props) {
@@ -23,7 +28,6 @@ class ChooseAccountContent extends React.Component {
   componentDidMount() {
     this.scrollToThanksRef();
 
-    const checkRoleURL = "https://10.7.7.134/api/Account/user/roles"
     let currentToken = this.getToken();
 
     if (true) {

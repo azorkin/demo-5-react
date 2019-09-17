@@ -1,9 +1,8 @@
 import React from 'react';
 import VerifyPhoneForm from "./Forms/VerifyPhoneSignupForm";
+import HomeiAPI from "../shared/HomeiAPI";
 
-const requestVerification = () => {
-  
-}
+const { verifyPhoneRequestURL } = HomeiAPI;
 
 class VerifyPhoneContent extends React.Component {
 
@@ -24,7 +23,6 @@ class VerifyPhoneContent extends React.Component {
   }
 
   requestVerification() {
-    const verifyPhoneRequestURL = "https://10.7.7.134/api/Account/phone/verify/request"
     let currentToken = sessionStorage.getItem('homei_token');
 
     if (true) {

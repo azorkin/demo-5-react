@@ -2,10 +2,11 @@ import React from 'react';
 import { Button, Label, FormGroup, Form, Input, Row, Col } from 'reactstrap';
 import { Link, withRouter } from 'react-router-dom';
 import { isRequired, isValidCode } from "../../shared/Validation";
+import HomeiAPI from "../../shared/HomeiAPI";
 
 
 // API URLs
-const verifyPhoneURLSignup = "https://10.7.7.134/api/Account/phone/_confirm?code=";
+const {verifyPhoneURLSignup} = HomeiAPI;
 
 class VerifyPhoneForm extends React.Component {
 

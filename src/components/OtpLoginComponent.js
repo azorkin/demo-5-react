@@ -5,9 +5,6 @@ import VerifyPhoneLoginForm from './Forms/VerifyPhoneLoginForm';
 // import { Control, LocalForm, Errors, Fieldset } from 'react-redux-form';
 // import { Link, withRouter } from "react-router-dom";
 
-// API URLs
-const loginRequestURL = 'https://10.7.7.134/api/Token/otp/request';
-
 class OtpLogin extends React.Component {
 
   constructor(props) {

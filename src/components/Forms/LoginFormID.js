@@ -3,9 +3,11 @@ import { Button, Label, FormGroup, Form, Input } from 'reactstrap';
 // import { Control, LocalForm, Errors, Fieldset } from 'react-redux-form';
 import { Link, withRouter } from "react-router-dom";
 import { isRequired, isValidDate, isValidId } from "../../shared/Validation";
+import HomeiAPI from "../../shared/HomeiAPI";
+
 
 // API URLs
-const loginRequestURL = 'https://10.7.7.134/api/Token/otp/request';
+const { loginRequestOtpURL } = HomeiAPI;
 
 class LoginFormID extends React.Component {
 
@@ -105,7 +107,7 @@ class LoginFormID extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    let currentSignupURL = loginRequestURL;
+    let currentSignupURL = loginRequestOtpURL;
     
     let data = JSON.stringify(this.state.data);
     console.log("current form data is: " + data);

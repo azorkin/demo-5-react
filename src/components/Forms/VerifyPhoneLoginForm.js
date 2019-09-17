@@ -1,12 +1,12 @@
 import React from 'react';
 import { Button, Label, FormGroup, Form, Input, Row, Col } from 'reactstrap';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { isRequired, isValidCode } from "../../shared/Validation";
+import HomeiAPI from "../../shared/HomeiAPI";
 
 
 // API URLs
-const verifyPhoneURLLogin = "https://10.7.7.134/api/Token/otp";
-const requestVerifyPhoneURL = "https://10.7.7.134/api/Token/otp/request";
+const {verifyPhoneURLLogin, requestVerifyPhoneURL} = HomeiAPI;
 
 class VerifyPhoneLoginForm extends React.Component {
 

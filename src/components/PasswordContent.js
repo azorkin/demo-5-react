@@ -2,12 +2,13 @@ import React from 'react';
 import { Button, Label, FormGroup, Form, Input, UncontrolledTooltip } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
 import { isRequired, isValidPassword, isConfirmedPassword, hasNumber, hasLetter, hasCapital } from '../shared/Validation';
+import HomeiAPI from "../shared/HomeiAPI";
 
 // API URLs
-const setPasswordURL = "https://10.7.7.134/api/Account/password/_set";
+const { setPasswordURL } = HomeiAPI;
 
 // Parsing query string
-function getQueryStringParams(query) {
+/* function getQueryStringParams(query) {
   // query = query.substring(1);
   if (typeof query !== "string") return null;
   var vars = query.slice(1).split("&");
@@ -17,7 +18,7 @@ function getQueryStringParams(query) {
     paramsObj[pair[0]] = decodeURIComponent(pair[1]);
   }
   return paramsObj;
-}
+} */
 
 const ValidationIndicator = (props) => {
   // console.log(props);
@@ -289,7 +290,7 @@ class PasswordContent extends React.Component {
             <Label htmlFor="Password" className="login-form__label">*בחירת סיסמה</Label>
             <button id="formTooltipToggle" type="button" className="login-form__tooltip-btn">?</button>
             <UncontrolledTooltip placement="left" target="formTooltipToggle"  container=".form-group">
-              הסיסמה צריכה לכלול 8 עד 12 תווים, כולל ספרות ואותיות
+              הסיסמה צריכה לכלול 8 עד 12 תווים בלועזית, אות גדולה וספרה אחת לפחות
             </UncontrolledTooltip>
             {!this.state.validity.Password && this.state.touched.Password && <label className="error">{this.state.errors.Password}</label>}
           </FormGroup>
