@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Label, Row, Col, FormGroup, Form, Input } from 'reactstrap';
 // import { Control, LocalForm, Errors, Fieldset } from 'react-redux-form';
 import { Link, withRouter } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 import { isRequired, isValidEmail, isValidPhone } from "../../shared/Validation";
 import FormLevelError from "./FormLevelError";
 import HomeiAPI from "../../shared/HomeiAPI";
@@ -14,6 +15,8 @@ class SignupForm extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.recaptchaRef = React.createRef();
 
     this.state = {
       loginMode: this.props.mode || '',
@@ -68,8 +71,8 @@ class SignupForm extends React.Component {
       formServerError: "",
       formServerStatus: null,
 
-      contactingServer: false
-
+      contactingServer: false,
+      hiddenCaptchaExecuted: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -117,7 +120,7 @@ class SignupForm extends React.Component {
     this.setState({
       touched: { ...this.state.touched, [name]: true }
     });
-    this.validateCheckboxes(name, event.target.checked);
+    // this.validateCheckboxes(name, event.target.checked);
     console.log(this.state.touched);
   }
 
@@ -192,77 +195,92 @@ class SignupForm extends React.Component {
       if (!currentFormIsValid) break
     }
     this.setState({ formIsValid: currentFormIsValid });
+    if (currentFormIsValid && !this.state.hiddenCaptchaExecuted) {
+      this.setState({
+        hiddenCaptchaExecuted: true
+      });
+      this.recaptchaRef.current.execute();
+      console.log(this.recaptchaRef.current, "executed");
+    };
     // console.log(this.state.validity , this.state.errors)
   }
 
   handleSubmit(event) {
     event.preventDefault();
 
-    let currentSignupURL = investorSignupRequestURL;
-    if (this.state.loginMode === 'borrower') {
-      currentSignupURL = borrowerSignupRequestURL;
-    }
+    // this.recaptchaRef.current.execute();
+    const recaptchaValue = this.recaptchaRef.current.getValue();
+
     
-    // let currentData = {...this.state.data};
-    // delete currentData.isConfirm4;
-
-    let data = JSON.stringify(this.state.data);
-    console.log("current form data is: " + data);
-
     this.setState({
-      contactingServer: true
-    });
-
-    fetch(currentSignupURL, {
-      method: 'POST',
-      body: data,
-      // mode: 'no-cors',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+      contactingServer: true,
+      data: {...this.state.data, captchaKey: recaptchaValue}
+    }, () => {
+      
+      console.log(this.recaptchaRef.current, recaptchaValue);
+      
+      let currentSignupURL = investorSignupRequestURL;
+      if (this.state.loginMode === 'borrower') {
+        currentSignupURL = borrowerSignupRequestURL;
       }
-    })
-    .then(response => {
-      if (!response.ok) {
-        // console.log(response.json());
-        console.log(response.status);
-        this.setState({ 
-          formServerOK: false,
-          formServerStatus: response.status,
+      
+      // let currentData = {...this.state.data};
+      // delete currentData.isConfirm4;
+
+      let data = JSON.stringify(this.state.data);
+      console.log("current form data is: " + data);
+
+      fetch(currentSignupURL, {
+        method: 'POST',
+        body: data,
+        // mode: 'no-cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          // console.log(response.json());
+          console.log(response.status);
+          this.setState({ 
+            formServerOK: false,
+            formServerStatus: response.status,
+            contactingServer: false
+          });
+          /* if (response.status === 401) {
+            this.setState({ formServerError: "אסימון לא חוקי או שפג תוקפו" });
+          }
+          else if (response.status === 400) {
+            this.setState({ formServerError: "Bad request" });
+          }
+          else if (response.status === 409) {
+            this.setState({ formServerError: "הפרטים שהזנת נמצאו במערכותינו הכנס מכאן" });
+          }  */
+          throw Error(response.statusText);
+        }
+        this.setState({
+          formServerOK: true,
+          formServerError: "",
           contactingServer: false
         });
-        /* if (response.status === 401) {
-          this.setState({ formServerError: "אסימון לא חוקי או שפג תוקפו" });
-        }
-        else if (response.status === 400) {
-          this.setState({ formServerError: "Bad request" });
-        }
-        else if (response.status === 409) {
-          this.setState({ formServerError: "הפרטים שהזנת נמצאו במערכותינו הכנס מכאן" });
-        }  */
-        // throw Error(response.statusText);
-      }
-      this.setState({
-        formServerOK: true,
-        formServerError: "",
-        contactingServer: false
+        return response.json()
+      })
+      .then(respJson => {
+        console.log('Success: ', respJson);
+        this.props.history.push('/thanks');
+      })
+      .catch(error => {
+        console.error('Error: ', error);
+        this.setState({
+          formServerOK: false,
+          formServerError: "server connection error",
+          // formServerStatus: '',
+          contactingServer: false
+        });
+        // this.props.history.push('/error');
       });
-      return response.json()
-    })
-    .then(respJson => {
-      console.log('Success: ', respJson);
-      this.props.history.push('/thanks');
-    })
-    .catch(error => {
-      console.error('Error: ', error);
-      this.setState({
-        formServerOK: false,
-        formServerError: "server connection error",
-        // formServerStatus: '',
-        contactingServer: false
-      });
-      this.props.history.push('/error');
-    })
+    });
   }
 
   handleBlur(event) {
@@ -271,8 +289,12 @@ class SignupForm extends React.Component {
       touched: { ...this.state.touched, [name]: true }
     });
     this.validateUserInput(name, event.target.value);
-    console.log(this.state.touched);
+    // console.log(this.state.touched);
   }
+
+  // componentDidMount() {
+  //   this.recaptchaRef.current.execute();
+  // }
 
   render() {
     // console.log("state: ", this.state.loginMode, "props: ", this.props.mode);
@@ -284,7 +306,7 @@ class SignupForm extends React.Component {
 
     return (
       <Form id="signupForm" className="login-form" onSubmit={this.handleSubmit} noValidate>
-        <Input type="hidden" name="captchaKey" value={this.state.data.captchaKey} />
+        {/* <Input type="hidden" name="captchaKey" value={this.state.data.captchaKey} /> */}
         <div className="login-form__switch" aria-label="choose login mode">
           <div className="login-form__switch-item homei-switch">
             <input 
@@ -435,6 +457,14 @@ class SignupForm extends React.Component {
         </div>
 
         <div className="login-form__footer">
+
+          <ReCAPTCHA
+            ref={this.recaptchaRef}
+            size="invisible"
+            sitekey={HomeiAPI.recaptchaUserKey}
+            onExpired={() => console.log("captcha expired")}
+          />
+
           {/* {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>} */}
           {!this.state.formServerOK && <FormLevelError status={this.state.formServerStatus} />}
 

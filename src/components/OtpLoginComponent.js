@@ -12,7 +12,7 @@ class OtpLogin extends React.Component {
 
     this.state = {
 
-      CaptchaKey: 'dummystring',
+      captchaKey: '',
       TZ: '',
       DateOfBirth: '',
       Code: '',
@@ -23,8 +23,9 @@ class OtpLogin extends React.Component {
     this.handleStep1 = this.handleStep1.bind(this);
   }
 
-  handleStep1(submittedTZ, submittedDateOfBirth) {
+  handleStep1(submittedCaptacha, submittedTZ, submittedDateOfBirth) {
     this.setState({
+      captchaKey: submittedCaptacha,
       TZ: submittedTZ,
       DateOfBirth: submittedDateOfBirth,
       loginStage: this.state.loginStage + 1

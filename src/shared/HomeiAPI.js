@@ -21,7 +21,9 @@ const HomeiAPI = {
 
   verifyPhoneURLSignup: baseApiUrl + "api/Account/phone/_confirm?code=",
 
-  checkRoleURL: baseApiUrl + "api/Account/user/roles"
+  checkRoleURL: baseApiUrl + "api/Account/user/roles",
+
+  recaptchaUserKey: "6LfNmbIUAAAAAFnesm75kCkE3igwU5Gu8j3eRCEK"
 };
 
 export default HomeiAPI;

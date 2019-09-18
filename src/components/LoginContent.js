@@ -10,10 +10,14 @@ class LoginContent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.toggleTabs = this.toggleTabs.bind(this);
     this.state = {
       activeTab: "2"
     }
+
+    this.tabPanelRef = React.createRef();
+
+    this.toggleTabs = this.toggleTabs.bind(this);
+    this.handleArrowKeys = this.handleArrowKeys.bind(this);
   }
 
   toggleTabs(tab) {
@@ -24,13 +28,43 @@ class LoginContent extends React.Component {
     }
   }
 
+  handleArrowKeys(e) {
+    let tabCount = e.target.parentNode.parentNode.childNodes.length;
+    let currentTab = +this.state.activeTab;
+    if (e.keyCode === 39 || e.keyCode === 37) {
+      console.log("arrow pressed", e.target);
+      // Move right
+      if (e.keyCode === 39) {
+        currentTab++;
+        if (currentTab > tabCount) {
+          currentTab = 1;
+        }
+        // Move left
+      } else if (e.keyCode === 37) {
+        currentTab--;
+        if (currentTab <= 0) {
+          currentTab = tabCount
+        }
+      }
+      this.setState({
+        activeTab: currentTab.toString()
+      });
+    }
+    console.log(e.target.parentNode.parentNode.childNodes[currentTab - 1]);
+    e.target.parentNode.parentNode.childNodes[currentTab-1].firstChild.focus();
+  }
+
+  componentDidMount() {
+
+  }
+
   render() {
 
     return (
       <div className="content login-content">
         <h1 className="login-content__heading">כניסה ללקוחות רשומים</h1>
         
-        <Nav tabs className="login-content__nav-tabs" role="tablist">
+        <Nav tabs className="login-content__nav-tabs" role="tablist" onKeyDown={this.handleArrowKeys}>
           <NavItem>
             <NavLink
               id="passLoginTab"
@@ -40,6 +74,7 @@ class LoginContent extends React.Component {
               aria-selected={this.state.activeTab === "1"}
               className={ this.state.activeTab === "1" ? "active" : ""}
               onClick={() => {this.toggleTabs("1"); }}
+              tabIndex={this.state.activeTab === "1" ? "0" : "-1"}
             >
               כניסה עם סיסמה
             </NavLink>
@@ -53,6 +88,7 @@ class LoginContent extends React.Component {
               aria-selected={this.state.activeTab === "2"}
               className={this.state.activeTab === "2" ? "active" : ""}
               onClick={() => { this.toggleTabs("2"); }}
+              tabIndex={this.state.activeTab === "2" ? "0" : "-1"}
             >
               כניסה עם מספר טלפון
             </NavLink>

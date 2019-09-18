@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Label, FormGroup, Form, Input } from 'reactstrap';
-// import { Control, LocalForm, Errors, Fieldset } from 'react-redux-form';
 import { Link, withRouter } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 import { isRequired, isValidDate, isValidId } from "../../shared/Validation";
 import HomeiAPI from "../../shared/HomeiAPI";
 import Spinner from "../Spinner";
@@ -14,10 +14,12 @@ class LoginFormID extends React.Component {
   constructor(props) {
     super(props);
 
+    this.recaptchaRef = React.createRef();
+
     this.state = {
 
       data: {
-        CaptchaKey: 'dummystring',
+        captchaKey: 'dummystring',
         TZ: '',
         DateOfBirth: ''
       },
@@ -41,7 +43,8 @@ class LoginFormID extends React.Component {
       formServerOK: true,
       formServerError: "",
 
-      contactingServer: false
+      contactingServer: false,
+      hiddenCaptchaExecuted: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -102,6 +105,13 @@ class LoginFormID extends React.Component {
       if (!currentFormIsValid) break
     }
     this.setState({ formIsValid: currentFormIsValid });
+    if (currentFormIsValid && !this.state.hiddenCaptchaExecuted) {
+      this.setState({
+        hiddenCaptchaExecuted: true
+      });
+      this.recaptchaRef.current.execute();
+      console.log(this.recaptchaRef.current, "executed");
+    };
     console.log(this.state.validity, this.state.errors)
   }
 
@@ -109,59 +119,69 @@ class LoginFormID extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    let currentSignupURL = loginOtpRequestURL;
-    
-    let data = JSON.stringify(this.state.data);
-    console.log("current form data is: " + data);
-    // console.log(this.props);
-    // this.props.history.push('/thanks');
+    const recaptchaValue = this.recaptchaRef.current.getValue();
 
     this.setState({
-      contactingServer: true
-    });
+      contactingServer: true,
+      data: { ...this.state.data, captchaKey: recaptchaValue }
+    }, () => {
 
-    fetch(currentSignupURL, {
-      method: 'POST',
-      body: data,
-      // mode: 'no-cors',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        console.log(response)
+      console.log(this.recaptchaRef.current, recaptchaValue);
+
+      let currentSignupURL = loginOtpRequestURL;
+      
+      let data = JSON.stringify(this.state.data);
+      console.log("current form data is: " + data);
+      // console.log(this.props);
+      // this.props.history.push('/thanks');
+
+      this.setState({
+        contactingServer: true
+      });
+
+      fetch(currentSignupURL, {
+        method: 'POST',
+        body: data,
+        // mode: 'no-cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          console.log(response)
+          this.setState({
+            formServerOK: false,
+            contactingServer: false
+          });
+          if (response.status === 401) {
+            this.setState({ formServerError: 'אחד או יותר מהנתונים שהזנת לא תקינים'});
+          }
+          // throw Error(response.statusText);
+        }
         this.setState({
-          formServerOK: false,
+          formServerOK: true,
+          formServerError: "",
           contactingServer: false
         });
-        if (response.status === 401) {
-          this.setState({ formServerError: 'אחד או יותר מהנתונים שהזנת לא תקינים'});
-        }
-        // throw Error(response.statusText);
-      }
-      this.setState({
-        formServerOK: true,
-        formServerError: "",
-        contactingServer: false
+        return response.json();
+      })
+      .then(respJson => {
+        console.log('Success: ', respJson);
+        // this.props.history.push('/thanks');
+        this.props.handleSuccessfulSubmit(this.state.data.captchaKey, this.state.data.TZ, this.state.data.DateOfBirth);
+      })
+      .catch(error => {
+        console.error('Error: ', error);
+        this.setState({
+          formServerOK: false,
+          formServerError: error,
+          contactingServer: false
+        });
+        this.props.history.push('/error');
       });
-      return response.json();
-    })
-    .then(respJson => {
-      console.log('Success: ', respJson);
-      // this.props.history.push('/thanks');
-      this.props.handleSuccessfulSubmit(this.state.data.TZ, this.state.data.DateOfBirth);
-    })
-    .catch(error => {
-      console.error('Error: ', error);
-      this.setState({
-        formServerOK: false,
-        formServerError: error,
-        contactingServer: false
-      });
-      this.props.history.push('/error');
-    })
+    });
   }
 
   handleBlur(event) {
@@ -171,6 +191,10 @@ class LoginFormID extends React.Component {
     });
     this.validateUserInput(name, event.target.value);
     console.log(this.state.touched);
+  }
+
+  componentDidMount() {
+    this.recaptchaRef.current.render();
   }
 
   render() {
@@ -210,6 +234,14 @@ class LoginFormID extends React.Component {
         </FormGroup>
 
         <div className="login-form__footer">
+
+          <ReCAPTCHA
+            ref={this.recaptchaRef}
+            size="invisible"
+            sitekey={HomeiAPI.recaptchaUserKey}
+            onExpired={() => console.log("captcha expired")}
+          />
+
           {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>}
 
           <Button type="submit" className="login-form__submit" disabled={!this.state.formIsValid || this.state.contactingServer}>
