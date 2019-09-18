@@ -6,7 +6,7 @@ import HomeiAPI from "../../shared/HomeiAPI";
 
 
 // API URLs
-const {resetPasswordURL} = HomeiAPI;
+const {resetPasswordRequestURL} = HomeiAPI;
 
 class ForgotPasswordForm extends React.Component {
 
@@ -93,7 +93,7 @@ class ForgotPasswordForm extends React.Component {
     let data = JSON.stringify(this.state.data);
     console.log("current form data is: " + data);
 
-    let fetchURL = resetPasswordURL;
+    let fetchURL = resetPasswordRequestURL;
     
     fetch(fetchURL, {
       method: 'POST',

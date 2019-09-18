@@ -173,7 +173,7 @@ class VerifyPhoneLoginForm extends React.Component {
     })
     .then(respJson => {
       console.log('Success: ', respJson);
-      this.props.history.push('/thanks');
+      this.props.history.push('/choose-account');
     })
     .catch(error => {
       console.error('Error: ', error);

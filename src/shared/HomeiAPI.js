@@ -4,6 +4,8 @@ const HomeiAPI = {
   investorSignupRequestURL: baseApiUrl + 'api/Investor/_signup',
   borrowerSignupRequestURL: baseApiUrl + 'api/Borrower/_signup',
 
+  emailConfirmationURL: baseApiUrl + "Account/email/_confirm/",
+
   setPasswordURL: baseApiUrl + "api/Account/password/_set",
 
 
@@ -11,8 +13,9 @@ const HomeiAPI = {
   verifyPhoneURLLogin: baseApiUrl + "api/Token/otp",
   requestVerifyPhoneURL: baseApiUrl + "api/Token/otp/request",
 
-  loginRequestURL: baseApiUrl + 'api/token',
-  resetPasswordURL: baseApiUrl + "api/Account/password/reset/request",
+  loginRequestURL: baseApiUrl + 'api/Token',
+  resetPasswordRequestURL: baseApiUrl + "api/Account/password/reset/request",
+  resetPasswordURL: baseApiUrl + "api/Account/password/_reset",
 
   verifyPhoneRequestURL: baseApiUrl + "api/Account/phone/verify/request",
 

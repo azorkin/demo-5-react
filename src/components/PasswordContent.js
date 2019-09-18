@@ -5,7 +5,7 @@ import { isRequired, isValidPassword, isConfirmedPassword, hasNumber, hasLetter,
 import HomeiAPI from "../shared/HomeiAPI";
 
 // API URLs
-const { setPasswordURL } = HomeiAPI;
+const { emailConfirmationURL, setPasswordURL } = HomeiAPI;
 
 // Parsing query string
 /* function getQueryStringParams(query) {
@@ -218,7 +218,7 @@ class PasswordContent extends React.Component {
 
   componentDidMount() {
     // let confirmationParams = getQueryStringParams(this.props.location.search);
-    let getURL = "https://10.7.7.134/api/Account/email/_confirm/" + this.props.location.search;
+    let getURL = emailConfirmationURL + this.props.location.search;
     console.log("mounted", getURL);
     // this.setState({data: { ...this.state.data,
     //   userId: confirmationParams.userId,

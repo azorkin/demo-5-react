@@ -4,10 +4,10 @@ import { Button, Label, FormGroup, Form, Input } from 'reactstrap';
 import { Link, withRouter } from "react-router-dom";
 import { isRequired, isValidDate, isValidId } from "../../shared/Validation";
 import HomeiAPI from "../../shared/HomeiAPI";
-
+import Spinner from "../Spinner";
 
 // API URLs
-const { loginRequestOtpURL } = HomeiAPI;
+const { loginOtpRequestURL } = HomeiAPI;
 
 class LoginFormID extends React.Component {
 
@@ -39,7 +39,9 @@ class LoginFormID extends React.Component {
 
       formIsValid: false,
       formServerOK: true,
-      formServerError: ""
+      formServerError: "",
+
+      contactingServer: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -107,12 +109,16 @@ class LoginFormID extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    let currentSignupURL = loginRequestOtpURL;
+    let currentSignupURL = loginOtpRequestURL;
     
     let data = JSON.stringify(this.state.data);
     console.log("current form data is: " + data);
     // console.log(this.props);
     // this.props.history.push('/thanks');
+
+    this.setState({
+      contactingServer: true
+    });
 
     fetch(currentSignupURL, {
       method: 'POST',
@@ -126,15 +132,19 @@ class LoginFormID extends React.Component {
     .then(response => {
       if (!response.ok) {
         console.log(response)
-        this.setState({formServerOK: false});
+        this.setState({
+          formServerOK: false,
+          contactingServer: false
+        });
         if (response.status === 401) {
           this.setState({ formServerError: 'אחד או יותר מהנתונים שהזנת לא תקינים'});
         }
-        throw Error(response.statusText);
+        // throw Error(response.statusText);
       }
       this.setState({
         formServerOK: true,
-        formServerError: ""
+        formServerError: "",
+        contactingServer: false
       });
       return response.json();
     })
@@ -143,7 +153,15 @@ class LoginFormID extends React.Component {
       // this.props.history.push('/thanks');
       this.props.handleSuccessfulSubmit(this.state.data.TZ, this.state.data.DateOfBirth);
     })
-    .catch(error => console.error('Error: ', error))
+    .catch(error => {
+      console.error('Error: ', error);
+      this.setState({
+        formServerOK: false,
+        formServerError: error,
+        contactingServer: false
+      });
+      this.props.history.push('/error');
+    })
   }
 
   handleBlur(event) {
@@ -170,6 +188,7 @@ class LoginFormID extends React.Component {
             onChange={this.handleTextInput}
             onBlur={this.handleBlur} 
             required 
+            autoComplete="off"
           />
           <Label htmlFor="TZ" className="login-form__label">*תעודת זהות</Label>
           {!this.state.validity.TZ && this.state.touched.TZ && <label className="error">{this.state.errors.TZ}</label>}
@@ -184,6 +203,7 @@ class LoginFormID extends React.Component {
             onChange={this.handleTextInput}
             onBlur={this.handleBlur} 
             required 
+            autoComplete="off"
           />
           <Label htmlFor="DateOfBirth" className="login-form__label">*תאריך לידה</Label>
           {!this.state.validity.DateOfBirth && this.state.touched.DateOfBirth && <label className="error">{this.state.errors.DateOfBirth}</label>}
@@ -191,9 +211,12 @@ class LoginFormID extends React.Component {
 
         <div className="login-form__footer">
           {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>}
-          <Button type="submit" className="login-form__submit" disabled={!this.state.formIsValid}>
+
+          <Button type="submit" className="login-form__submit" disabled={!this.state.formIsValid || this.state.contactingServer}>
+            {this.state.contactingServer && <Spinner className="login-form__spinner-elem" />}
             כניסה
           </Button>
+
           <p className="login-form__footer-text">
             אין לכם חשבון?{" "}
             <Link to="/signup">הירשמו עכשיו</Link>

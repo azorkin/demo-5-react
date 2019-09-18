@@ -2,9 +2,10 @@ import React from 'react';
 import { Button, Label, FormGroup, Form, Input, UncontrolledTooltip } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import {isRequired, isValidPassword, isConfirmedPassword, hasNumber, hasLetter, hasCapital} from '../shared/Validation';
+import HomeiAPI from "../shared/HomeiAPI";
 
 // API URLs
-const setPasswordURL = "https://10.7.7.134/api/Account/password/_reset";
+const { resetPasswordURL } = HomeiAPI;
 
 // Parsing query string
 function getQueryStringParams(query) {
@@ -157,7 +158,7 @@ class ResetPasswordContent extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    let currentSignupURL = setPasswordURL;
+    let currentSignupURL = resetPasswordURL;
 
     let data = JSON.stringify(this.state.data);
     console.log("current form data is: " + data);

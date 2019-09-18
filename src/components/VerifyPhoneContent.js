@@ -12,7 +12,7 @@ class VerifyPhoneContent extends React.Component {
     this.state = {
       formServerOK: true,
       formServerError: "",
-      userPhone: ""
+      userPhone: "XXX-XXXXXXX"
     }
     this.requestVerification = this.requestVerification.bind(this);
   }
@@ -75,7 +75,9 @@ class VerifyPhoneContent extends React.Component {
     return (
       <div className="content login-content">
         <h1 className="login-content__heading">אימות מספר טלפון</h1>
-        <p className="login-content__lead">נכנסים לאזור האישי עם הקוד ששלחנו ב-sms למספר {this.state.userPhone}</p>
+        <p className="login-content__lead">
+          על מנת לאפשר התחברות מהירה בעתיד, אנא הקלד את קוד האימות ששלחנו לך למספר {this.state.userPhone}
+        </p>
 
         <VerifyPhoneForm resendCode={this.requestVerification} />
 

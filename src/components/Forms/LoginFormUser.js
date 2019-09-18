@@ -3,6 +3,7 @@ import { Button, Label, FormGroup, Form, Input } from 'reactstrap';
 import { Link, withRouter } from "react-router-dom";
 import { isRequired, isValidEmail, isValidPassword } from "../../shared/Validation";
 import HomeiAPI from "../../shared/HomeiAPI";
+import Spinner from "../Spinner";
 
 // API URLs
 const {loginRequestURL} = HomeiAPI;
@@ -37,7 +38,9 @@ class LoginFormUser extends React.Component {
 
       formIsValid: false,
       formServerOK: true,
-      formServerError: ""
+      formServerError: "",
+
+      contactingServer: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -112,6 +115,10 @@ class LoginFormUser extends React.Component {
     // console.log(this.props);
     // this.props.history.push('/thanks');
 
+    this.setState({
+      contactingServer: true
+    });
+
     fetch(currentSignupURL, {
       method: 'POST',
       body: data,
@@ -124,17 +131,21 @@ class LoginFormUser extends React.Component {
     .then(response => {
       if (!response.ok) {
         console.log(response)
-        this.setState({formServerOK: false});
+        this.setState({
+          formServerOK: false,
+          contactingServer: false
+        });
         if (response.status === 401) {
           this.setState({ formServerError: "שם משתמש או סיסמה שגויים"});
         } else if (response.status === 403 ) {
           this.setState({ formServerError: "..." });
         }
-        throw Error(response.statusText);
+        // throw Error(response.statusText);
       }
       this.setState({
         formServerOK: true,
-        formServerError: ""
+        formServerError: "",
+        contactingServer: false
       });
       return response.json()
     })
@@ -145,7 +156,12 @@ class LoginFormUser extends React.Component {
     })
     .catch(error => {
       console.error('Error: ', error);
-      // this.props.history.push('/error');
+      this.setState({
+        formServerOK: false,
+        formServerError: error,
+        contactingServer: false
+      });
+      this.props.history.push('/error');
     })
   }
 
@@ -188,6 +204,7 @@ class LoginFormUser extends React.Component {
             onChange={this.handleTextInput}
             onBlur={this.handleBlur} 
             required 
+            autoComplete="off"
           />
           <Label htmlFor="Username" className="login-form__label">*דואר אלקטרוני</Label>
           {!this.state.validity.Username && this.state.touched.Username && <label className="error">{this.state.errors.Username}</label>}
@@ -202,6 +219,7 @@ class LoginFormUser extends React.Component {
             onChange={this.handleTextInput}
             onBlur={this.handleBlur} 
             required 
+            autoComplete="off"
           />
           <Label htmlFor="Password" className="login-form__label">*סיסמה</Label>
           {!this.state.validity.Password && this.state.touched.Password && <label className="error">{this.state.errors.Password}</label>}
@@ -212,9 +230,12 @@ class LoginFormUser extends React.Component {
 
         <div className="login-form__footer">
           {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>}
-          <Button type="submit" className="login-form__submit" disabled={!this.state.formIsValid}>
+
+          <Button type="submit" className="login-form__submit" disabled={!this.state.formIsValid || this.state.contactingServer}>
+            {this.state.contactingServer && <Spinner className="login-form__spinner-elem" />}
             כניסה
           </Button>
+
           <p className="login-form__footer-text">
             אין לכם חשבון?{" "}
             <Link to="/signup">הירשמו עכשיו</Link>
