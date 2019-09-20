@@ -85,6 +85,8 @@ class SignupForm extends React.Component {
     this.handleBlurCheckbox = this.handleBlurCheckbox.bind(this);
 
     this.onCaptchaVerify = this.onCaptchaVerify.bind(this);
+    this.onCaptchaExpire = this.onCaptchaExpire.bind(this);
+    this.captchaReset = this.captchaReset.bind(this);
   }
 
   handleModeChange(event) {
@@ -219,6 +221,20 @@ class SignupForm extends React.Component {
       if (this.state.contactingServer) {
         this.handleSubmit();
       }
+    });
+  }
+
+  onCaptchaExpire() {
+    console.log("captcha expired");
+    this.captchaReset();
+  }
+
+  captchaReset() {
+    this.captcha.reset();
+    console.log("captcha is reset");
+    this.setState({
+      hiddenCaptchaVerified: false,
+      data: { ...this.state.data, captchaKey: '' }
     });
   }
 
@@ -492,6 +508,7 @@ class SignupForm extends React.Component {
             isolated="true"
             sitekey={HomeiAPI.recaptchaUserKey}
             onVerify={this.onCaptchaVerify}
+            onExpire={this.onCaptchaExpire}
           />
 
           {/* {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>} */}

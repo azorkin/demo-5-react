@@ -1,8 +1,10 @@
 import React from 'react';
 import { Button, Label, FormGroup, Form, Input, Row, Col } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
+import Reaptcha from "reaptcha";
 import { isRequired, isValidCode } from "../../shared/Validation";
 import HomeiAPI from "../../shared/HomeiAPI";
+import Spinner from "../Spinner";
 
 
 // API URLs
@@ -13,10 +15,12 @@ class VerifyPhoneLoginForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.captcha = null;
+
     this.state = {
 
       data: {
-        CaptchaKey: 'dummystring',
+        captchaKey: '',
         TZ: '',
         DateOfBirth: '',
         Code: ''
@@ -36,13 +40,20 @@ class VerifyPhoneLoginForm extends React.Component {
 
       formIsValid: false,
       formServerOK: true,
-      formServerError: ""
+      formServerError: "",
+
+      contactingServer: false,
+      hiddenCaptchaVerified: false
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTextInput = this.handleTextInput.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.requestVerification = this.requestVerification.bind(this);
+
+    this.onCaptchaVerify = this.onCaptchaVerify.bind(this);
+    this.onCaptchaExpire = this.onCaptchaExpire.bind(this);
+    this.captchaReset = this.captchaReset.bind(this);
   }
 
   requestVerification() {
@@ -128,7 +139,33 @@ class VerifyPhoneLoginForm extends React.Component {
       if (!currentFormIsValid) break
     }
     this.setState({ formIsValid: currentFormIsValid });
-    console.log(this.state.validity, this.state.errors)
+    // console.log(this.state.validity, this.state.errors)
+  }
+
+  onCaptchaVerify(token) {
+    console.log(token);
+    this.setState({
+      hiddenCaptchaVerified: true,
+      data: { ...this.state.data, captchaKey: token }
+    }, () => {
+      if (this.state.contactingServer) {
+        this.handleSubmit();
+      }
+    });
+  }
+
+  onCaptchaExpire() {
+    console.log("captcha expired");
+    this.captchaReset();
+  }
+
+  captchaReset() {
+    this.captcha.reset();
+    console.log("captcha is reset");
+    this.setState({
+      hiddenCaptchaVerified: false,
+      data: { ...this.state.data, captchaKey: '' }
+    });
   }
 
   getToken() {
@@ -137,13 +174,25 @@ class VerifyPhoneLoginForm extends React.Component {
   }
 
   handleSubmit(event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
+    this.setState({
+      contactingServer: true,
+      // data: {...this.state.data, captchaKey: recaptchaValue}
+    });
 
-    let data = JSON.stringify(this.state.data);
-    console.log("current form data is: " + data);
+    if (this.state.data.captchaKey === "") {
+      this.captcha.execute();
+      return
+    }
+    console.log(this.captcha, this.state.data.captchaKey);
 
     let currentSignupURL = verifyPhoneURLLogin;
     
+    let data = JSON.stringify(this.state.data);
+    console.log("current form data is: " + data);
+
     fetch(currentSignupURL, {
       method: 'POST',
       body: data,
@@ -155,8 +204,12 @@ class VerifyPhoneLoginForm extends React.Component {
     })
     .then(response => {
       if (!response.ok) {
-        console.log(response)
-        this.setState({ formServerOK: false });
+        console.log(response.status)
+        this.setState({
+          formServerOK: false,
+          formServerStatus: response.status,
+          contactingServer: false
+        });
         if (response.status === 401) {
           this.setState({ formServerError: "קוד לא תקין, נסה שנית או לחץ לשליחה מחדש" });
         }
@@ -167,7 +220,8 @@ class VerifyPhoneLoginForm extends React.Component {
       }
       this.setState({
         formServerOK: true,
-        formServerError: ""
+        formServerError: "",
+        contactingServer: false
       });
       return response.json()
     })
@@ -177,8 +231,13 @@ class VerifyPhoneLoginForm extends React.Component {
     })
     .catch(error => {
       console.error('Error: ', error);
+      this.setState({
+        formServerOK: false,
+        // formServerError: error,
+        contactingServer: false
+      });
       // this.props.history.push('/error');
-    })
+    });
 
   }
 
@@ -188,7 +247,7 @@ class VerifyPhoneLoginForm extends React.Component {
       touched: { ...this.state.touched, [name]: true }
     });
     this.validateUserInput(name, event.target.value);
-    console.log(this.state.touched);
+    // console.log(this.state.touched);
   }
 
   componentDidMount() {
@@ -223,9 +282,22 @@ class VerifyPhoneLoginForm extends React.Component {
             <p className="login-form__text">לא קיבלתי קוד, <a href="#1" onClick={this.requestVerification}>שלחו לי שוב</a></p>
 
             <div className="login-form__footer">
+              <Reaptcha
+                ref={e => (this.captcha = e)}
+                id="verify-phone-captcha"
+                size="invisible"
+                isolated="true"
+                sitekey={HomeiAPI.recaptchaUserKey}
+                onVerify={this.onCaptchaVerify}
+                onExpire={this.onCaptchaExpire}
+              />
+
               {!this.state.formServerOK && <label className="error">{this.state.formServerError}</label>}
 
-              <Button type="submit" disabled={!this.state.formIsValid} className="login-form__submit">המשך להגשת בקשה</Button>
+              <Button type="submit" disabled={!this.state.formIsValid || this.state.contactingServer} className="login-form__submit">
+                {this.state.contactingServer && <Spinner className="login-form__spinner-elem" />}
+                המשך להגשת בקשה
+                </Button>
 
             </div>
 
