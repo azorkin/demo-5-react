@@ -43,7 +43,8 @@ class VerifyPhoneLoginForm extends React.Component {
       formServerError: "",
 
       contactingServer: false,
-      hiddenCaptchaVerified: false
+      hiddenCaptchaVerified: false,
+      isRequestingVerification: false
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -56,15 +57,28 @@ class VerifyPhoneLoginForm extends React.Component {
     this.captchaReset = this.captchaReset.bind(this);
   }
 
-  requestVerification() {
+  requestVerification(event) {
+    if (event) {
+      event.preventDefault();
+    }
 
     this.setState({
-      data: {...this.state.data, Code: ''}
+      isRequestingVerification: true,
+      data: {...this.state.data, Code: ''},
+      validity: { Code: false },
+      formIsValid: false
     });
+
+    if (this.state.data.captchaKey === "") {
+      this.captcha.execute();
+      return
+    }
 
     const fetchURL = requestVerifyPhoneURL;
 
     let data = JSON.stringify(this.state.data);
+    // this.captcha.execute();
+    console.log(data);
 
     if (true) {
       fetch(fetchURL, {
@@ -76,25 +90,33 @@ class VerifyPhoneLoginForm extends React.Component {
           'Content-Type': 'application/json'
         }
       })
-        .then(response => {
-          if (!response.ok) {
-            console.log(response)
-            this.setState({ formServerOK: false });
-            if (response.status === 401) {
-              this.setState({ formServerError: 'אחד או יותר מהנתונים שהזנת לא תקינים' });
-            }
-            throw Error(response.statusText);
+      .then(response => {
+        if (!response.ok) {
+          console.log(response)
+          this.setState({ formServerOK: false });
+          if (response.status === 401) {
+            this.setState({ formServerError: 'אחד או יותר מהנתונים שהזנת לא תקינים' });
           }
-          this.setState({
-            formServerOK: true,
-            formServerError: ""
-          });
-          return response.text();
-        })
-        .then(respText => {
-          console.log('Success: ', respText);
-        })
-        .catch(error => console.error('Error: ', error))
+          throw Error(response.statusText);
+        }
+        this.setState({
+          isRequestingVerification: false,
+          formServerOK: true,
+          formServerError: ""
+        });
+        return response.text();
+      })
+      .then(respText => {
+        console.log('Success: ', respText);
+      })
+      .catch(error => {
+        console.error('Error: ', error);
+        this.setState({
+          isRequestingVerification: false
+        });
+        this.captchaReset();
+        // this.props.history.push('/error');
+      });
     }
   }
 
@@ -150,7 +172,10 @@ class VerifyPhoneLoginForm extends React.Component {
     }, () => {
       if (this.state.contactingServer) {
         this.handleSubmit();
-      }
+      };
+      if (this.state.isRequestingVerification) {
+        this.requestVerification();
+      };
     });
   }
 
@@ -236,6 +261,7 @@ class VerifyPhoneLoginForm extends React.Component {
         // formServerError: error,
         contactingServer: false
       });
+      this.captchaReset();
       // this.props.history.push('/error');
     });
 

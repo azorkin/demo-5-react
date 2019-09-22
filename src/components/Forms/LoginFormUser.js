@@ -189,6 +189,7 @@ class LoginFormUser extends React.Component {
         } else if (response.status === 403 ) {
           this.setState({ formServerError: "..." });
         }
+        this.captchaReset();
         // throw Error(response.statusText);
       }
       this.setState({
@@ -207,9 +208,10 @@ class LoginFormUser extends React.Component {
       console.error('Error: ', error);
       this.setState({
         formServerOK: false,
-        formServerError: error,
+        // formServerError: error,
         contactingServer: false
       });
+      this.captchaReset();
       this.props.history.push('/error');
     });
   }

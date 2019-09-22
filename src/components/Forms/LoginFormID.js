@@ -187,6 +187,7 @@ class LoginFormID extends React.Component {
         if (response.status === 401) {
           this.setState({ formServerError: 'אחד או יותר מהנתונים שהזנת לא תקינים'});
         }
+        this.captchaReset();
         // throw Error(response.statusText);
       }
       this.setState({
@@ -205,9 +206,10 @@ class LoginFormID extends React.Component {
       console.error('Error: ', error);
       this.setState({
         formServerOK: false,
-        formServerError: error,
+        // formServerError: error,
         contactingServer: false
       });
+      this.captchaReset();
       this.props.history.push('/error');
     });
   }

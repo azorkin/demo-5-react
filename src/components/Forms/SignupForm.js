@@ -315,6 +315,7 @@ class SignupForm extends React.Component {
         // formServerStatus: '',
         contactingServer: false
       });
+      this.captchaReset();
       // this.props.history.push('/error');
     });
   }
