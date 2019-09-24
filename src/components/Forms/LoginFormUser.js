@@ -179,18 +179,18 @@ class LoginFormUser extends React.Component {
     })
     .then(response => {
       if (!response.ok) {
-        console.log(response);
-        this.setState({
-          formServerOK: false,
-          contactingServer: false
-        });
-        if (response.status === 401) {
-          this.setState({ formServerError: "שם משתמש או סיסמה שגויים"});
-        } else if (response.status === 403 ) {
-          this.setState({ formServerError: "..." });
-        }
-        this.captchaReset();
-        // throw Error(response.statusText);
+        // console.log(response);
+        // this.setState({
+        //   formServerOK: false,
+        //   contactingServer: false
+        // });
+        // if (response.status === 401) {
+        //   this.setState({ formServerError: "שם משתמש או סיסמה שגויים"});
+        // } else if (response.status === 403 ) {
+        //   this.setState({ formServerError: "..." });
+        // }
+        // this.captchaReset();
+        throw response.status;
       }
       this.setState({
         formServerOK: true,
@@ -204,15 +204,26 @@ class LoginFormUser extends React.Component {
       console.log('Success: ', respJson);
       this.props.history.push('/choose-account');
     })
-    .catch(error => {
-      console.error('Error: ', error);
+    .catch(errorStatus => {
+      console.error(errorStatus);
+      console.log(errorStatus);
       this.setState({
+        formServerOK: false,
+        contactingServer: false
+      });
+      if (errorStatus === 401) {
+        this.setState({ formServerError: "שם משתמש או סיסמה שגויים" });
+      } else if (errorStatus === 403) {
+        this.setState({ formServerError: "..." });
+      }
+      this.captchaReset();
+      /* this.setState({
         formServerOK: false,
         // formServerError: error,
         contactingServer: false
-      });
-      this.captchaReset();
-      this.props.history.push('/error');
+      }); */
+      // this.captchaReset();
+      // this.props.history.push('/error');
     });
   }
 
