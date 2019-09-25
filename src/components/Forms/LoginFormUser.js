@@ -212,7 +212,8 @@ class LoginFormUser extends React.Component {
         contactingServer: false
       });
       if (errorStatus === 401) {
-        this.setState({ formServerError: "שם משתמש או סיסמה שגויים" });
+        // this.setState({ formServerError: "שם משתמש או סיסמה שגויים" });
+        this.setState({ formServerError: "אחד או יותר מהפרטים שהזנת אינו תקין" });
       } else if (errorStatus === 403) {
         this.setState({ formServerError: "..." });
       }

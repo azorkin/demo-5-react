@@ -50,7 +50,7 @@ class LoginContent extends React.Component {
         activeTab: currentTab.toString()
       });
     }
-    console.log(e.target.parentNode.parentNode.childNodes[currentTab - 1]);
+    // console.log(e.target.parentNode.parentNode.childNodes[currentTab - 1]);
     e.target.parentNode.parentNode.childNodes[currentTab-1].firstChild.focus();
   }
 

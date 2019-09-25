@@ -4,7 +4,7 @@ const HomeiAPI = {
   investorSignupRequestURL: baseApiUrl + 'api/Investor/_signup',
   borrowerSignupRequestURL: baseApiUrl + 'api/Borrower/_signup',
 
-  emailConfirmationURL: baseApiUrl + "Account/email/_confirm/",
+  emailConfirmationURL: baseApiUrl + "api/Account/email/_confirm/",
 
   setPasswordURL: baseApiUrl + "api/Account/password/_set",
 
