@@ -315,7 +315,8 @@ class VerifyPhoneLoginForm extends React.Component {
                 isolated="true"
                 sitekey={HomeiAPI.recaptchaUserKey}
                 onVerify={this.onCaptchaVerify}
-                onExpire={this.onCaptchaExpire}
+                onExpire={this.onCaptchaExpire} 
+                hl="iw"
               />
 
               {!this.state.formServerOK && <label className="error">{this.state.formServerError}</label>}

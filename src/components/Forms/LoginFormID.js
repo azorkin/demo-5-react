@@ -1,14 +1,26 @@
 import React from 'react';
 import { Button, Label, FormGroup, Form, Input } from 'reactstrap';
+// import DayPicker from 'react-day-picker';
+// import DayPickerInput from 'react-day-picker/DayPickerInput';
+// import 'react-day-picker/lib/style.css'; 
 import { Link, withRouter } from "react-router-dom";
 // import ReCAPTCHA from "react-google-recaptcha";
 import Reaptcha from "reaptcha";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { registerLocale } from "react-datepicker";
+import he from 'date-fns/locale/he';
+
 import { isRequired, isValidDate, isValidId } from "../../shared/Validation";
 import HomeiAPI from "../../shared/HomeiAPI";
 import Spinner from "../Spinner";
 
 // API URLs
 const { loginOtpRequestURL } = HomeiAPI;
+
+// Registering locale for React DatePicker
+registerLocale('he', he);
 
 class LoginFormID extends React.Component {
 
@@ -53,9 +65,17 @@ class LoginFormID extends React.Component {
     this.handleTextInput = this.handleTextInput.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
 
+    this.handleDateInput = this.handleDateInput.bind(this);
+
     this.onCaptchaVerify = this.onCaptchaVerify.bind(this);
     this.onCaptchaExpire = this.onCaptchaExpire.bind(this);
     this.captchaReset = this.captchaReset.bind(this);
+  }
+
+  handleDateInput = date => {
+    console.log(date);
+    this.setState({ data: { ...this.state.data, "DateOfBirth": date } },
+      () => { this.validateUserInput("DateOfBirth", date) });
   }
 
   handleTextInput(event) {
@@ -229,9 +249,28 @@ class LoginFormID extends React.Component {
 
   render() {
 
+    const CustomDateInput = (props) => {
+      console.log(props, props.value)
+      return (
+        <Input
+          onClick={props.onClick}
+          type="text"
+          id="DateOfBirth"
+          name="DateOfBirth"
+          value={props.value}
+          // value={this.state.data.DateOfBirth}
+          className={!!this.state.data.DateOfBirth ? "move-top" : ""}
+          // onChange={this.handleTextInput}
+          // onBlur={this.handleBlur}
+          required
+          autoComplete="off"
+        />
+      )
+    }
+
     return (
       <Form id="loginFormID" className="login-form" onSubmit={this.handleSubmit} noValidate>
-        <input type="hidden" name="captchaKey" value={this.state.data.captchaKey} />
+        {/* <input type="hidden" name="captchaKey" value={this.state.data.captchaKey} /> */}
         <FormGroup>
           <Input 
             type="text" 
@@ -247,7 +286,7 @@ class LoginFormID extends React.Component {
           <Label htmlFor="TZ" className="login-form__label">*תעודת זהות</Label>
           {!this.state.validity.TZ && this.state.touched.TZ && <label className="error">{this.state.errors.TZ}</label>}
         </FormGroup>
-        <FormGroup>
+        {/* <FormGroup>
           <Input 
             type="text" 
             id="DateOfBirth" 
@@ -258,6 +297,49 @@ class LoginFormID extends React.Component {
             onBlur={this.handleBlur} 
             required 
             autoComplete="off"
+          />
+          <Label htmlFor="DateOfBirth" className="login-form__label">*תאריך לידה</Label>
+          {!this.state.validity.DateOfBirth && this.state.touched.DateOfBirth && <label className="error">{this.state.errors.DateOfBirth}</label>}
+        </FormGroup> */}
+        {/* <FormGroup>
+          <DayPickerInput
+            // component={props => <Input {...props} />}
+            onDayChange={day => console.log(day)}
+            placeholder=""
+            formatDate="DD/MM/YYYY"
+            inputProps={{
+              // type="text",
+              id: "DateOfBirth",
+              name: "DateOfBirth",
+              value: this.state.data.DateOfBirth,
+              className: "form-control" + (!!this.state.data.DateOfBirth ? " move-top" : ""),
+              onChange: this.handleTextInput,
+              onBlur: this.handleBlur,
+              required: true,
+              autoComplete: "off"
+            }}
+          />
+          <Label htmlFor="DateOfBirth" className="login-form__label">*תאריך לידה</Label>
+          {!this.state.validity.DateOfBirth && this.state.touched.DateOfBirth && <label className="error">{this.state.errors.DateOfBirth}</label>}
+        </FormGroup> */}
+        <FormGroup className={(!!this.state.data.DateOfBirth ? " label-on-top" : "")}>
+          <DatePicker 
+            id="DateOfBirth"
+            name="DateOfBirth" 
+            className={"form-control" + (!!this.state.data.DateOfBirth ? " move-top" : "")}
+            selected={this.state.data.DateOfBirth}
+            // value={this.state.data.DateOfBirth}
+            locale="he" 
+            dateFormat="dd/MM/yyyy"
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            onChange={this.handleDateInput}
+            // onChangeRaw={this.handleTextInput}
+            onBlur={this.handleBlur}
+            required
+            autoComplete="off"
+            // customInput={<CustomDateInput />}
           />
           <Label htmlFor="DateOfBirth" className="login-form__label">*תאריך לידה</Label>
           {!this.state.validity.DateOfBirth && this.state.touched.DateOfBirth && <label className="error">{this.state.errors.DateOfBirth}</label>}
@@ -279,6 +361,7 @@ class LoginFormID extends React.Component {
             sitekey={HomeiAPI.recaptchaUserKey}
             onVerify={this.onCaptchaVerify}
             onExpire={this.onCaptchaExpire}
+            hl="iw"
           />
 
           {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>}
