@@ -22,6 +22,15 @@ const { loginOtpRequestURL } = HomeiAPI;
 // Registering locale for React DatePicker
 registerLocale('he', he);
 
+const formatDate = (date) => {
+  let dd = date.getDate().toString();
+  if (dd.length === 1) {dd = "0" + dd};
+  let mm = (date.getMonth() + 1).toString();
+  if (mm.length === 1) {mm = "0" + mm};
+  let yyyy = date.getFullYear().toString();
+  return dd + "/" + mm + "/" + yyyy
+}
+
 class LoginFormID extends React.Component {
 
   constructor(props) {
@@ -29,6 +38,7 @@ class LoginFormID extends React.Component {
 
     // this.recaptchaRef = React.createRef();
     this.captcha = null;
+    this.dateInputRef = React.createRef();
 
     this.state = {
 
@@ -53,6 +63,8 @@ class LoginFormID extends React.Component {
         DateOfBirth: ''
       },
 
+      datePickerDate: '',
+
       formIsValid: false,
       formServerOK: true,
       formServerError: "",
@@ -72,13 +84,20 @@ class LoginFormID extends React.Component {
     this.captchaReset = this.captchaReset.bind(this);
   }
 
-  handleDateInput = date => {
-    console.log(date);
-    this.setState({ data: { ...this.state.data, "DateOfBirth": date } },
-      () => { this.validateUserInput("DateOfBirth", date) });
+  handleDateInput = (date) => {
+    // date variable gets its value from the datepicker
+    let formatedDate = formatDate(date);
+    console.log(date, formatedDate );
+    // let selectedDate = this.dateInputRef.current.input.value;
+    this.setState({ 
+      data: { ...this.state.data, "DateOfBirth": formatedDate },
+      datePickerDate: date
+    },
+      () => { this.validateUserInput("DateOfBirth", formatedDate) });
   }
 
   handleTextInput(event) {
+    console.log("handleText");
     const name = event.target.name;
     const value = event.target.value;
     this.setState({ data: { ...this.state.data, [name]: value } },
@@ -249,7 +268,7 @@ class LoginFormID extends React.Component {
 
   render() {
 
-    const CustomDateInput = (props) => {
+    /* const CustomDateInput = (props) => {
       console.log(props, props.value)
       return (
         <Input
@@ -267,7 +286,7 @@ class LoginFormID extends React.Component {
         />
       )
     }
-
+ */
     return (
       <Form id="loginFormID" className="login-form" onSubmit={this.handleSubmit} noValidate>
         {/* <input type="hidden" name="captchaKey" value={this.state.data.captchaKey} /> */}
@@ -324,18 +343,21 @@ class LoginFormID extends React.Component {
         </FormGroup> */}
         <FormGroup className={(!!this.state.data.DateOfBirth ? " label-on-top" : "")}>
           <DatePicker 
+            ref={this.dateInputRef}
             id="DateOfBirth"
             name="DateOfBirth" 
             className={"form-control" + (!!this.state.data.DateOfBirth ? " move-top" : "")}
-            selected={this.state.data.DateOfBirth}
-            // value={this.state.data.DateOfBirth}
+            selected={this.datePickerDate}
+            value={this.state.data.DateOfBirth}
             locale="he" 
             dateFormat="dd/MM/yyyy"
             showMonthDropdown
             showYearDropdown
+            strictParsing 
             dropdownMode="select"
             onChange={this.handleDateInput}
-            // onChangeRaw={this.handleTextInput}
+            // onChange={this.handleTextInput}
+            onChangeRaw={this.handleTextInput}
             onBlur={this.handleBlur}
             required
             autoComplete="off"
