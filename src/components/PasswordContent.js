@@ -3,6 +3,7 @@ import { Button, Label, FormGroup, Form, Input, UncontrolledTooltip } from 'reac
 import { withRouter } from 'react-router-dom';
 import { isRequired, isValidPassword, isConfirmedPassword, hasNumber, hasLetter, hasCapital } from '../shared/Validation';
 import HomeiAPI from "../shared/HomeiAPI";
+import Spinner from "./Spinner";
 
 // API URLs
 const { emailConfirmationURL, setPasswordURL } = HomeiAPI;
@@ -80,7 +81,9 @@ class PasswordContent extends React.Component {
 
       formIsValid: false,
       formServerOK: true,
-      formServerError: ""
+      formServerError: "",
+
+      contactingServer: false
 
       // tooltipOpen: false
     }
@@ -150,6 +153,10 @@ class PasswordContent extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
+    this.setState({
+      contactingServer: true
+    });
+
     let currentSignupURL = setPasswordURL;
 
     let data = JSON.stringify(this.state.data);
@@ -180,7 +187,8 @@ class PasswordContent extends React.Component {
         }
         this.setState({
           formServerOK: true,
-          formServerError: ""
+          formServerError: "",
+          contactingServer: false
         });
         return response.json()
       })
@@ -189,7 +197,14 @@ class PasswordContent extends React.Component {
         console.log('Success: ', respJson);
         this.props.history.push('/verify-phone');
       })
-      .catch(error => console.error('Error: ', error))
+      .catch(errorStatus => {
+        console.error(errorStatus);
+        console.log(errorStatus);
+        this.setState({
+          formServerOK: false,
+          contactingServer: false
+        });
+      });
   }
 
   setToken(idToken) {
@@ -315,7 +330,10 @@ class PasswordContent extends React.Component {
 
           <div className="login-form__footer">
             {!this.state.formServerOK && <label className="error error--form-level">{this.state.formServerError}</label>}
-            <Button type="submit" disabled={!this.state.formIsValid} className="login-form__submit">שמירה והמשך</Button>
+            <Button type="submit" disabled={!this.state.formIsValid || this.state.contactingServer} className="login-form__submit">
+              {this.state.contactingServer && <Spinner className="login-form__spinner-elem" />}
+              שמירה והמשך
+            </Button>
           </div>
         </Form>
       </div>
