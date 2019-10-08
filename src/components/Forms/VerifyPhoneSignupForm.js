@@ -3,6 +3,7 @@ import { Button, Label, FormGroup, Form, Input, Row, Col } from 'reactstrap';
 import { Link, withRouter } from 'react-router-dom';
 import { isRequired, isValidCode } from "../../shared/Validation";
 import HomeiAPI from "../../shared/HomeiAPI";
+import Spinner from "../Spinner";
 
 
 // API URLs
@@ -36,7 +37,9 @@ class VerifyPhoneForm extends React.Component {
 
       formIsValid: false,
       formServerOK: true,
-      formServerError: ""
+      formServerError: "",
+
+      contactingServer: false
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -96,6 +99,10 @@ class VerifyPhoneForm extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
+    this.setState({
+      contactingServer: true
+    });
+
     let data = JSON.stringify(this.state.data);
     console.log("current form data is: " + data);
 
@@ -111,7 +118,10 @@ class VerifyPhoneForm extends React.Component {
       .then(response => {
         if (!response.ok) {
           console.log(response)
-          this.setState({ formServerOK: false });
+          this.setState({ 
+            formServerOK: false,
+            contactingServer: false
+          });
           if (response.status === 401) {
             this.setState({ formServerError: "קוד לא תקין, נסה שנית או לחץ לשליחה מחדש" });
           }
@@ -122,7 +132,8 @@ class VerifyPhoneForm extends React.Component {
         }
         this.setState({
           formServerOK: true,
-          formServerError: ""
+          formServerError: "",
+          contactingServer: false
         });
         return response.json()
       })
@@ -131,6 +142,11 @@ class VerifyPhoneForm extends React.Component {
       })
       .catch(error => {
         console.error('Error: ', error);
+        this.setState({
+          formServerOK: false,
+          // formServerError: error,
+          contactingServer: false
+        });
         setTimeout(() => {
           this.props.history.push('/login');
         }, 3000);
@@ -180,7 +196,10 @@ class VerifyPhoneForm extends React.Component {
             <div className="login-form__footer">
               {!this.state.formServerOK && <label className="error">{this.state.formServerError}</label>}
 
-              <Button type="submit" disabled={!this.state.formIsValid} className="login-form__submit">המשך להגשת בקשה</Button>
+              <Button type="submit" disabled={!this.state.formIsValid || this.state.contactingServer} className="login-form__submit">
+                {this.state.contactingServer && <Spinner className="login-form__spinner-elem" />}
+                המשך להגשת בקשה
+              </Button>
 
               <p className="login-form__footer-text"><Link to="/choose-account">דלג להגשת הבקשה</Link></p>
             </div>

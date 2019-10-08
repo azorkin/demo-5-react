@@ -23,12 +23,15 @@ const { loginOtpRequestURL } = HomeiAPI;
 registerLocale('he', he);
 
 const formatDate = (date) => {
-  let dd = date.getDate().toString();
-  if (dd.length === 1) {dd = "0" + dd};
-  let mm = (date.getMonth() + 1).toString();
-  if (mm.length === 1) {mm = "0" + mm};
-  let yyyy = date.getFullYear().toString();
-  return dd + "/" + mm + "/" + yyyy
+  if (date instanceof Date) {
+    let dd = date.getDate().toString();
+    if (dd.length === 1) {dd = "0" + dd};
+    let mm = (date.getMonth() + 1).toString();
+    if (mm.length === 1) {mm = "0" + mm};
+    let yyyy = date.getFullYear().toString();
+    return dd + "/" + mm + "/" + yyyy
+  }
+  return ""
 }
 
 class LoginFormID extends React.Component {
@@ -205,6 +208,9 @@ class LoginFormID extends React.Component {
     let currentSignupURL = loginOtpRequestURL;
     
     let data = JSON.stringify(this.state.data);
+    // let preData = {...this.state.data};
+    // let formatedDate = formatDate(preData.DateOfBirth);
+    // preData.DateOfBirth = formatedDate;
     console.log("current form data is: " + data);
 
     fetch(currentSignupURL, {
@@ -347,17 +353,18 @@ class LoginFormID extends React.Component {
             id="DateOfBirth"
             name="DateOfBirth" 
             className={"form-control" + (!!this.state.data.DateOfBirth ? " move-top" : "")}
-            selected={this.datePickerDate}
-            value={this.state.data.DateOfBirth}
+            // selected={this.state.data.DateOfBirth}
+            selected={this.state.datePickerDate}
+            // value={this.state.data.DateOfBirth}
             locale="he" 
             dateFormat="dd/MM/yyyy"
             showMonthDropdown
             showYearDropdown
-            strictParsing 
+            // strictParsing 
             dropdownMode="select"
             onChange={this.handleDateInput}
             // onChange={this.handleTextInput}
-            onChangeRaw={this.handleTextInput}
+            // onChangeRaw={this.handleTextInput}
             onBlur={this.handleBlur}
             required
             autoComplete="off"
