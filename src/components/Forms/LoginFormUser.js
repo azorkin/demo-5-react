@@ -179,17 +179,6 @@ class LoginFormUser extends React.Component {
     })
     .then(response => {
       if (!response.ok) {
-        // console.log(response);
-        // this.setState({
-        //   formServerOK: false,
-        //   contactingServer: false
-        // });
-        // if (response.status === 401) {
-        //   this.setState({ formServerError: "שם משתמש או סיסמה שגויים"});
-        // } else if (response.status === 403 ) {
-        //   this.setState({ formServerError: "..." });
-        // }
-        // this.captchaReset();
         throw response.status;
       }
       this.setState({
@@ -212,7 +201,6 @@ class LoginFormUser extends React.Component {
         contactingServer: false
       });
       if (errorStatus === 401) {
-        // this.setState({ formServerError: "שם משתמש או סיסמה שגויים" });
         this.setState({ formServerError: "אחד או יותר מהפרטים שהזנת אינו תקין" });
       } else if (errorStatus === 403) {
         this.setState({ formServerError: "..." });
@@ -229,17 +217,17 @@ class LoginFormUser extends React.Component {
   }
 
   setToken(idToken) {
-    // Saves user token to localStorage
+    // Saves user token to sessionStorage
     sessionStorage.setItem('homei_token', idToken);
   }
 
   getToken() {
-    // Retrieves the user token from localStorage
+    // Retrieves the user token from sessionStorage
     return sessionStorage.getItem('homei_token');
   }
 
   logout() {
-    // Clear user token and profile data from localStorage
+    // Clear user token and profile data from sessionStorage
     sessionStorage.removeItem('homei_token');
   }
 
