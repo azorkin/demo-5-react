@@ -195,7 +195,6 @@ class LoginFormUser extends React.Component {
     })
     .catch(errorStatus => {
       console.error(errorStatus);
-      console.log(errorStatus);
       this.setState({
         formServerOK: false,
         contactingServer: false

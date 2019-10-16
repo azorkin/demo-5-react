@@ -193,9 +193,19 @@ class VerifyPhoneLoginForm extends React.Component {
     });
   }
 
+  setToken(idToken) {
+    // Saves user token to sessionStorage
+    sessionStorage.setItem('homei_token', idToken);
+  }
+
   getToken() {
-    // Retrieves the user token from localStorage
+    // Retrieves the user token from sessionStorage
     return sessionStorage.getItem('homei_token');
+  }
+
+  logout() {
+    // Clear user token and profile data from sessionStorage
+    sessionStorage.removeItem('homei_token');
   }
 
   handleSubmit(event) {
@@ -230,18 +240,7 @@ class VerifyPhoneLoginForm extends React.Component {
     .then(response => {
       if (!response.ok) {
         console.log(response.status)
-        this.setState({
-          formServerOK: false,
-          formServerStatus: response.status,
-          contactingServer: false
-        });
-        if (response.status === 401) {
-          this.setState({ formServerError: "קוד לא תקין, נסה שנית או לחץ לשליחה מחדש" });
-        }
-        if (response.status === 403) {
-          this.setState({ formServerError: "פג תוקפו של הקוד. לחץ לשליחה מחדש" });
-        }
-        throw Error(response.statusText);
+        throw response.status;
       }
       this.setState({
         formServerOK: true,
@@ -251,17 +250,29 @@ class VerifyPhoneLoginForm extends React.Component {
       return response.json()
     })
     .then(respJson => {
+      this.setToken(respJson);
       console.log('Success: ', respJson);
       this.props.history.push('/choose-account');
     })
-    .catch(error => {
-      console.error('Error: ', error);
+    .catch(errorStatus => {
+      console.error(errorStatus);
       this.setState({
+        formServerOK: false,
+        contactingServer: false
+      });
+      if (errorStatus === 401) {
+        this.setState({ formServerError: "קוד לא תקין, נסה שנית או לחץ לשליחה מחדש" });
+      }
+      else if (errorStatus === 403) {
+        this.setState({ formServerError: "פג תוקפו של הקוד. לחץ לשליחה מחדש" });
+      }
+      this.captchaReset();
+      /* this.setState({
         formServerOK: false,
         // formServerError: error,
         contactingServer: false
-      });
-      this.captchaReset();
+      }); */
+      // this.captchaReset();
       // this.props.history.push('/error');
     });
 
